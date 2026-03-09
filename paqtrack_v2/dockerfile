@@ -1,0 +1,17 @@
+FROM node:20
+
+WORKDIR /app
+
+COPY paqtrack_v2/backend ./backend
+COPY paqtrack_v2/frontend ./frontend
+
+WORKDIR /app/backend
+RUN npm install
+
+WORKDIR /app/frontend
+RUN npm install
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["node","/app/backend/server.js"]
