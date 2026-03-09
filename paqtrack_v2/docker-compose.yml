@@ -1,0 +1,37 @@
+services:
+
+  # ── Base de datos MySQL ────────────────────────────────────────────────────
+  db:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: paqtrack_db
+    env_file: .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+  # ── Backend Node.js ────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: paqtrack_api
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    # El propio index.js hace retry interno a MySQL,
+    # así que aunque el healthcheck pase tarde el backend aguanta.
+
+volumes:
+  mysql_data:
