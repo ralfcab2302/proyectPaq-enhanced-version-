@@ -10,6 +10,7 @@ import { authRouter } from "./routes/auth.routes.js";
 import { empresaRouter } from "./routes/empresa.routes.js";
 import { usuariosRouter } from "./routes/usuarios.routes.js";
 import { salidasRouter } from "./routes/salidas.routes.js";
+import { datosSeeder } from "./seeders/datos.seeder.js";
 
 const server = express();
 
@@ -50,6 +51,7 @@ async function arrancar() {
   await esperarMySQL();
   await initDB();
   await superadminSeeder();
+  await datosSeeder()
 
   server.listen(3000, () => {
     console.log("🚀 Servidor en http://localhost:3000");
