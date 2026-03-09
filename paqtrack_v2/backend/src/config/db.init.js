@@ -1,10 +1,8 @@
 "use strict";
 import { pool } from "./db.js";
-
 export async function initDB() {
   const conn = await pool.getConnection();
   try {
-    
     await conn.query(`
       CREATE TABLE IF NOT EXISTS empresa (
         codigo       INT AUTO_INCREMENT PRIMARY KEY,
@@ -12,10 +10,6 @@ export async function initDB() {
         contacto     VARCHAR(150)
       )
     `);
-
-    
-    
-    
     await conn.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
         codigo_usuario  INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,10 +20,6 @@ export async function initDB() {
         FOREIGN KEY (codigo_empresa) REFERENCES empresa(codigo) ON DELETE SET NULL
       )
     `);
-
-    
-    
-    
     await conn.query(`
       CREATE TABLE IF NOT EXISTS salidas (
         codigo          INT AUTO_INCREMENT PRIMARY KEY,
@@ -40,7 +30,6 @@ export async function initDB() {
         FOREIGN KEY (codigo_empresa) REFERENCES empresa(codigo) ON DELETE CASCADE
       )
     `);
-
     console.log("✅ Tablas creadas / verificadas");
   } finally {
     conn.release();

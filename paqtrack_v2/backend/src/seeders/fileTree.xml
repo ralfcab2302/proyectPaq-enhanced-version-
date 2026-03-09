@@ -1,0 +1,112 @@
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Arial', sans-serif; font-size: 18px; font-weight: bold; fill: #2c3e50; }
+      .subtitle { font-family: 'Arial', sans-serif; font-size: 12px; fill: #7f8c8d; }
+      .folder-text { font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; fill: #27ae60; font-weight: bold; }
+      .file-text { font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; fill: #3498db; }
+      .icon { font-family: 'Arial', sans-serif; font-size: 16px; }
+      .line { stroke: #bdc3c7; stroke-width: 1.5; }
+      .background { fill: #f8f9fa; }
+      .header-bg { fill: #ecf0f1; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="800" class="background"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1000" height="60" class="header-bg"/>
+  <text x="20" y="25" class="title">📁 File Tree: backend</text>
+  <text x="20" y="45" class="subtitle">Generated: 9/3/2026, 12:23:06 | FileTree Pro Extension</text>
+
+  <!-- Tree Structure -->
+    <line x1="15" y1="80" x2="25" y2="80" class="line"/>
+    <text x="30" y="85" class="icon">📁</text>
+    <text x="55" y="85" class="folder-text">src/</text>
+    <line x1="45" y1="100" x2="45" y2="110" class="line"/>
+    <line x1="45" y1="110" x2="55" y2="110" class="line"/>
+    <text x="60" y="115" class="icon">📁</text>
+    <text x="85" y="115" class="folder-text">config/</text>
+    <line x1="75" y1="130" x2="75" y2="140" class="line"/>
+    <line x1="75" y1="140" x2="85" y2="140" class="line"/>
+    <text x="90" y="145" class="icon">📄</text>
+    <text x="115" y="145" class="file-text">db.init.js</text>
+    <line x1="75" y1="165" x2="75" y2="175" class="line"/>
+    <line x1="75" y1="175" x2="85" y2="175" class="line"/>
+    <text x="90" y="180" class="icon">📄</text>
+    <text x="115" y="180" class="file-text">db.js</text>
+    <line x1="45" y1="235" x2="45" y2="245" class="line"/>
+    <line x1="45" y1="245" x2="55" y2="245" class="line"/>
+    <text x="60" y="250" class="icon">📁</text>
+    <text x="85" y="250" class="folder-text">controllers/</text>
+    <line x1="75" y1="265" x2="75" y2="275" class="line"/>
+    <line x1="75" y1="275" x2="85" y2="275" class="line"/>
+    <text x="90" y="280" class="icon">📄</text>
+    <text x="115" y="280" class="file-text">auth.controller.js</text>
+    <line x1="75" y1="300" x2="75" y2="310" class="line"/>
+    <line x1="75" y1="310" x2="85" y2="310" class="line"/>
+    <text x="90" y="315" class="icon">📄</text>
+    <text x="115" y="315" class="file-text">empresa.controller.js</text>
+    <line x1="75" y1="335" x2="75" y2="345" class="line"/>
+    <line x1="75" y1="345" x2="85" y2="345" class="line"/>
+    <text x="90" y="350" class="icon">📄</text>
+    <text x="115" y="350" class="file-text">salidas.controller.js</text>
+    <line x1="75" y1="370" x2="75" y2="380" class="line"/>
+    <line x1="75" y1="380" x2="85" y2="380" class="line"/>
+    <text x="90" y="385" class="icon">📄</text>
+    <text x="115" y="385" class="file-text">usuarios.controller.js</text>
+    <line x1="45" y1="440" x2="45" y2="450" class="line"/>
+    <line x1="45" y1="450" x2="55" y2="450" class="line"/>
+    <text x="60" y="455" class="icon">📁</text>
+    <text x="85" y="455" class="folder-text">middleware/</text>
+    <line x1="75" y1="470" x2="75" y2="480" class="line"/>
+    <line x1="75" y1="480" x2="85" y2="480" class="line"/>
+    <text x="90" y="485" class="icon">📄</text>
+    <text x="115" y="485" class="file-text">auth.middleware.js</text>
+    <line x1="45" y1="540" x2="45" y2="550" class="line"/>
+    <line x1="45" y1="550" x2="55" y2="550" class="line"/>
+    <text x="60" y="555" class="icon">📁</text>
+    <text x="85" y="555" class="folder-text">routes/</text>
+    <line x1="75" y1="570" x2="75" y2="580" class="line"/>
+    <line x1="75" y1="580" x2="85" y2="580" class="line"/>
+    <text x="90" y="585" class="icon">📄</text>
+    <text x="115" y="585" class="file-text">auth.routes.js</text>
+    <line x1="75" y1="605" x2="75" y2="615" class="line"/>
+    <line x1="75" y1="615" x2="85" y2="615" class="line"/>
+    <text x="90" y="620" class="icon">📄</text>
+    <text x="115" y="620" class="file-text">empresa.routes.js</text>
+    <line x1="75" y1="640" x2="75" y2="650" class="line"/>
+    <line x1="75" y1="650" x2="85" y2="650" class="line"/>
+    <text x="90" y="655" class="icon">📄</text>
+    <text x="115" y="655" class="file-text">salidas.routes.js</text>
+    <line x1="75" y1="675" x2="75" y2="685" class="line"/>
+    <line x1="75" y1="685" x2="85" y2="685" class="line"/>
+    <text x="90" y="690" class="icon">📄</text>
+    <text x="115" y="690" class="file-text">usuarios.routes.js</text>
+    <line x1="45" y1="745" x2="45" y2="755" class="line"/>
+    <line x1="45" y1="755" x2="55" y2="755" class="line"/>
+    <text x="60" y="760" class="icon">📁</text>
+    <text x="85" y="760" class="folder-text">seeders/</text>
+    <line x1="75" y1="775" x2="75" y2="785" class="line"/>
+    <line x1="75" y1="785" x2="85" y2="785" class="line"/>
+    <text x="90" y="790" class="icon">📄</text>
+    <text x="115" y="790" class="file-text">datos.seeder.js</text>
+    <line x1="75" y1="810" x2="75" y2="820" class="line"/>
+    <line x1="75" y1="820" x2="85" y2="820" class="line"/>
+    <text x="90" y="825" class="icon">📄</text>
+    <text x="115" y="825" class="file-text">superadmin.seeder.js</text>
+    <line x1="45" y1="880" x2="45" y2="890" class="line"/>
+    <line x1="45" y1="890" x2="55" y2="890" class="line"/>
+    <text x="60" y="895" class="icon">📄</text>
+    <text x="85" y="895" class="file-text">index.js</text>
+    <line x1="15" y1="960" x2="25" y2="960" class="line"/>
+    <text x="30" y="965" class="icon">⚙️</text>
+    <text x="55" y="965" class="file-text">.dockerignore</text>
+    <line x1="15" y1="995" x2="25" y2="995" class="line"/>
+    <text x="30" y="1000" class="icon">🐳</text>
+    <text x="55" y="1000" class="file-text">Dockerfile</text>
+    <line x1="15" y1="1030" x2="25" y2="1030" class="line"/>
+    <text x="30" y="1035" class="icon">⚙️</text>
+    <text x="55" y="1035" class="file-text">package.json</text>
+</svg>
