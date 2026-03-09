@@ -1,17 +1,12 @@
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /app
 
-COPY paqtrack_v2/backend ./backend
-COPY paqtrack_v2/frontend ./frontend
+COPY backend/package*.json ./
+RUN npm install --omit=dev
 
-WORKDIR /app/backend
-RUN npm install
-
-WORKDIR /app/frontend
-RUN npm install
-RUN npm run build
+COPY backend/ .
 
 EXPOSE 3000
 
-CMD ["node","/app/backend/server.js"]
+CMD ["npm", "start"]
