@@ -6,10 +6,20 @@ Sistema de seguimiento de paquetes por salidas de máquinas clasificadoras. Cada
 
 ## Tecnologías
 
-- **Node.js + Express** — API REST
-- **MySQL 8** — Base de datos
-- **JWT + bcryptjs** — Autenticación y cifrado de contraseñas
-- **Docker + Docker Compose** — Contenedores
+**Backend central**
+- Node.js + Express — API REST
+- MySQL 8 — Base de datos
+- JWT + bcryptjs — Autenticación y cifrado de contraseñas
+- Docker + Docker Compose — Contenedores
+
+**Backend cliente**
+- Node.js — Script de sincronización automática cada 15 minutos
+- MySQL 8 — Base de datos local del cliente
+- setInterval — Sincronización periódica sin dependencias externas
+
+**Frontend**
+- Angular 17 — Standalone components
+- Tailwind CSS — Estilos
 
 ---
 
@@ -19,38 +29,69 @@ Sistema de seguimiento de paquetes por salidas de máquinas clasificadoras. Cada
 paqtrack_v2/
 ├── .env
 ├── docker-compose.yml
-├── database/
-│   └── Dockerfile
-└── backend/
-    ├── Dockerfile
-    ├── package.json
-    └── src/
-        ├── index.js
-        ├── config/
-        │   ├── db.js              # Pool de conexión MySQL
-        │   └── db.init.js         # Creación de tablas
-        ├── middleware/
-        │   └── auth.middleware.js # verificarToken, soloAdmin, soloSuperadmin, filtroEmpresa
-        ├── controllers/
-        │   ├── auth.controller.js
-        │   ├── empresa.controller.js
-        │   ├── usuarios.controller.js
-        │   └── salidas.controller.js
-        ├── routes/
-        │   ├── auth.routes.js
-        │   ├── empresa.routes.js
-        │   ├── usuarios.routes.js
-        │   └── salidas.routes.js
-        └── seeders/
-            ├── superadmin.seeder.js  # Crea el superadmin inicial
-            └── datos.seeder.js       # Crea empresas, usuarios y salidas de ejemplo
+├── database/                        # Dockerfile MySQL compartido
+├── backend/                         # API central
+│   ├── Dockerfile
+│   ├── package.json
+│   └── src/
+│       ├── index.js
+│       ├── config/
+│       │   ├── db.js                # Pool de conexión MySQL
+│       │   └── db.init.js           # Creación de tablas
+│       ├── middleware/
+│       │   └── auth.middleware.js   # verificarToken, soloAdmin, soloSuperadmin, filtroEmpresa
+│       ├── controllers/
+│       │   ├── auth.controller.js
+│       │   ├── empresa.controller.js
+│       │   ├── usuarios.controller.js
+│       │   ├── salidas.controller.js
+│       │   └── sync.controller.js   # Recibe datos del backend cliente
+│       ├── routes/
+│       │   ├── auth.routes.js
+│       │   ├── empresa.routes.js
+│       │   ├── usuarios.routes.js
+│       │   ├── salidas.routes.js
+│       │   └── sync.routes.js
+│       └── seeders/
+│           ├── superadmin.seeder.js
+│           └── datos.seeder.js
+├── backend_cliente/                 # Script de sincronización del cliente
+│   ├── Dockerfile
+│   ├── package.json
+│   └── src/
+│       ├── index.js                 # Arranque + setInterval cada 15 min
+│       ├── db.js                    # Conexión a la BD local del cliente
+│       ├── db.init.js               # Crea tablas y datos de prueba
+│       └── sync.js                  # Lógica de sincronización con el central
+└── frontend/
+    └── frontend-angular/
+        └── src/app/
+            ├── models/models.ts     # Interfaces TypeScript
+            ├── services/            # auth, empresa, salidas, usuarios
+            ├── guards/
+            │   └── auth.guard.ts    # Protege rutas privadas
+            └── pages/
+                ├── login/
+                ├── dashboard/       # Vista diferente según rol
+                └── busqueda/
 ```
 
 ---
 
-## Base de datos
+## Arquitectura de sincronización
 
-### Tablas
+```
+BD local cliente → backend_cliente → POST /api/sync → backend_central → BD central
+                        ↑
+                  cada 15 minutos
+                  (setInterval)
+```
+
+El `backend_cliente` guarda en su tabla `sync_log` la fecha de la última sincronización exitosa. En cada ciclo solo envía los registros más nuevos que esa fecha, evitando duplicados.
+
+---
+
+## Base de datos central
 
 **empresa**
 | Campo | Tipo | Descripción |
@@ -63,9 +104,9 @@ paqtrack_v2/
 | Campo | Tipo | Descripción |
 |---|---|---|
 | codigo_usuario | INT PK | Id del usuario |
-| codigo_empresa | INT FK | Empresa a la que pertenece (NULL si superadmin) |
+| codigo_empresa | INT FK | Empresa (NULL si superadmin) |
 | correo | VARCHAR | Email único |
-| contrasena | VARCHAR | Contraseña hasheada con bcrypt |
+| contrasena | VARCHAR | Hasheada con bcrypt |
 | rol | ENUM | superadmin / admin / usuario |
 
 **salidas**
@@ -83,8 +124,8 @@ paqtrack_v2/
 
 | Rol | Permisos |
 |---|---|
-| **superadmin** | Ve y gestiona todo — empresas, usuarios y salidas de todas las empresas |
-| **admin** | Ve y gestiona solo su empresa — usuarios y salidas propias |
+| **superadmin** | Ve todo — empresas, usuarios y salidas de todas las empresas |
+| **admin** | Ve solo su empresa — usuarios y salidas propias |
 | **usuario** | Solo puede buscar paquetes por código de barras |
 
 ---
@@ -94,14 +135,19 @@ paqtrack_v2/
 ### Requisitos
 - Docker Desktop instalado
 
-### Levantar el proyecto
+### Levantar el proyecto completo
 
 ```bash
 docker-compose up --build
 ```
 
-Al arrancar por primera vez se ejecutan automáticamente los seeders:
+Levanta 4 contenedores:
+- `paqtrack_db_central` — MySQL BD central
+- `paqtrack_api` — Backend central en puerto 3000
+- `paqtrack_db_cliente` — MySQL BD del cliente (simulación)
+- `paqtrack_cliente` — Script de sync, sincroniza cada 15 min
 
+Al arrancar por primera vez:
 ```
 ✅ MySQL listo
 ✅ Tablas creadas / verificadas
@@ -110,16 +156,18 @@ Al arrancar por primera vez se ejecutan automáticamente los seeders:
 ✅ SEUR creada con 300 salidas
 ✅ MRW creada con 300 salidas
 🚀 Servidor en http://localhost:3000
+
+✅ MySQL cliente listo
+✅ 50 salidas de prueba insertadas en BD cliente
+⏰ Sincronización cada 15 minutos
 ```
 
 ### Parar el proyecto
-
 ```bash
 docker-compose down
 ```
 
 ### Parar y borrar todos los datos
-
 ```bash
 docker-compose down -v
 ```
@@ -152,65 +200,40 @@ docker-compose down -v
 |---|---|---|---|
 | GET | /api/empresas | Lista de empresas | admin |
 | GET | /api/empresas/:id | Detalle de una empresa | admin |
-| POST | /api/empresas | Crear empresa | superadmin |
-| PUT | /api/empresas/:id | Editar empresa | superadmin |
-| DELETE | /api/empresas/:id | Eliminar empresa | superadmin |
 
 ### Usuarios
 | Método | Ruta | Descripción | Rol mínimo |
 |---|---|---|---|
 | GET | /api/usuarios | Lista de usuarios | admin |
 | GET | /api/usuarios/:id | Detalle de un usuario | admin |
-| POST | /api/usuarios | Crear usuario | admin |
-| PUT | /api/usuarios/:id | Editar usuario | admin |
-| DELETE | /api/usuarios/:id | Eliminar usuario | admin |
 
 ### Salidas
 | Método | Ruta | Descripción | Rol mínimo |
 |---|---|---|---|
-| GET | /api/salidas | Lista de salidas con filtros y paginación | usuario |
-| GET | /api/salidas/estadisticas | Estadísticas de salidas | usuario |
-| GET | /api/salidas/buscar/:codigoBarras | Historial de un código de barras | usuario |
+| GET | /api/salidas | Lista con filtros y paginación | usuario |
+| GET | /api/salidas/estadisticas | Estadísticas | usuario |
+| GET | /api/salidas/buscar/:codigoBarras | Historial de un paquete | usuario |
 | GET | /api/salidas/:id | Detalle de una salida | usuario |
-| POST | /api/salidas | Registrar una salida | admin |
-| DELETE | /api/salidas/:id | Eliminar una salida | superadmin |
 
----
-
-## Ejemplos de uso
-
-### Login
-```bash
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"correo":"admin@paqtrack.com","contrasena":"admin123"}'
-```
-
-### Obtener salidas con filtros
-```
-GET /api/salidas?nro_salida=5&desde=2026-01-01&pagina=1&limite=20
-```
-
-### Buscar paquete por código de barras
-```
-GET /api/salidas/buscar/ABC123456789
-```
+### Sync (uso interno)
+| Método | Ruta | Descripción | Auth |
+|---|---|---|---|
+| POST | /api/sync | Recibe salidas del backend cliente | API Key |
 
 ---
 
 ## Variables de entorno
 
-El archivo `.env` contiene:
-
 ```
 MYSQL_ROOT_PASSWORD=root
 MYSQL_DATABASE=paqtrack_db
 JWT_SECRET=clave_secreta_cambiar_en_produccion
-DB_HOST=db
+DB_HOST=db_central
 DB_USER=root
 DB_PASSWORD=root
 DB_NAME=paqtrack_db
 PORT=3000
+SYNC_API_KEY=sync_secret_key
 ```
 
-> ⚠️ Cambia `JWT_SECRET` por una clave segura antes de desplegar en producción.
+> ⚠️ Cambia `JWT_SECRET` y `SYNC_API_KEY` por valores seguros antes de desplegar en producción.
