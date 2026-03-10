@@ -1,27 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Empresa as EmpresaI } from '../models/models';
+import { Empresa } from '../models/models';
+
 @Injectable({
   providedIn: 'root',
 })
-export class Empresa {
+export class EmpresaService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
   getAll() {
-    return this.http.get<EmpresaI>(`${this.apiUrl}/empresas`);
+    return this.http.get<{ empresas: Empresa[] }>(`${this.apiUrl}/empresas`);
   }
-  getById(idEmpresa: number) {
-    return this.http.get<Empresa>(`${this.apiUrl}/empresas/${idEmpresa}`);
+
+  getById(id: number) {
+    return this.http.get<Empresa>(`${this.apiUrl}/empresas/${id}`);
   }
-  create(codigo: number, nombre: string, contacto: string) {
-    return this.http.post(`${this.apiUrl}/empresas`, { codigo, nombre, contacto });
-  }
-  
-  //   export interface Empresa {
-  //   codigo: number;
-  //   nombre: string;
-  //   contacto: string;
-  // }
 }

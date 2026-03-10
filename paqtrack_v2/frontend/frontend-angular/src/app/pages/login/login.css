@@ -1,0 +1,65 @@
+.icon-wrapper {
+  cursor: pointer;
+}
+
+.circle-outer {
+  fill: none;
+  stroke: #60a5fa;
+  stroke-width: 4;
+  stroke-dasharray: 314;
+  stroke-dashoffset: 0;
+  transition: stroke 0.3s ease;
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+
+.head {
+  fill: #60a5fa;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              fill 0.3s ease;
+  transform-origin: 50px 35px;
+  transform-box: fill-box;
+}
+
+.body {
+  fill: #60a5fa;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s,
+              fill 0.3s ease;
+  transform-origin: 50px 70px;
+  transform-box: fill-box;
+}
+
+.glow {
+  fill: none;
+  stroke: #60a5fa;
+  stroke-width: 8;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: blur(4px);
+}
+
+/* ── hover ── */
+.icon-wrapper:hover .circle-outer {
+  stroke: #3b82f6;
+  stroke-dashoffset: 314;
+  animation: redraw 0.9s cubic-bezier(0.77, 0, 0.18, 1) 0.05s forwards;
+}
+
+.icon-wrapper:hover .head {
+  transform: translateY(-3px) scale(1.12);
+  fill: #93c5fd;
+}
+
+.icon-wrapper:hover .body {
+  transform: translateY(2px) scale(1.06);
+  fill: #93c5fd;
+}
+
+.icon-wrapper:hover .glow {
+  opacity: 0.12;
+}
+
+@keyframes redraw {
+  from { stroke-dashoffset: 314; }
+  to   { stroke-dashoffset: 0; }
+}
