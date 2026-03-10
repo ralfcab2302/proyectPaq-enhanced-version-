@@ -10,6 +10,7 @@ import { authRouter } from "./routes/auth.routes.js";
 import { empresaRouter } from "./routes/empresa.routes.js";
 import { usuariosRouter } from "./routes/usuarios.routes.js";
 import { salidasRouter } from "./routes/salidas.routes.js";
+import { syncRouter } from "./routes/sync.routes.js";
 import { datosSeeder } from "./seeders/datos.seeder.js";
 
 const server = express();
@@ -17,7 +18,7 @@ const server = express();
 const corsOpciones = {
   origin: "*",
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
   optionsSuccessStatus: 204
 };
 server.use(cors(corsOpciones));
@@ -30,6 +31,7 @@ server.use("/api/auth", authRouter);
 server.use("/api/empresas", empresaRouter);
 server.use("/api/usuarios", usuariosRouter);
 server.use("/api/salidas", salidasRouter);
+server.use("/api/sync", syncRouter);
 
 async function esperarMySQL(intentos = 15) {
   for (let i = 1; i <= intentos; i++) {
@@ -63,6 +65,7 @@ async function arrancar() {
     console.log("   GET    /api/salidas");
     console.log("   GET    /api/salidas/estadisticas");
     console.log("   GET    /api/salidas/buscar/:codigoBarras");
+    console.log("   POST   /api/sync  (sync desde clientes)");
   });
 }
 

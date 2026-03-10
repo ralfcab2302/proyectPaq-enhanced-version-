@@ -1,37 +1,75 @@
 services:
 
-  # ── Base de datos MySQL ────────────────────────────────────────────────────
-  db:
-    build:
-      context: ./database
-      dockerfile: Dockerfile
-    container_name: paqtrack_db
-    env_file: .env
-    ports:
-      - "3306:3306"
+  # ─── BASE DE DATOS CENTRAL ───────────────────────────────────────────────────
+  db_central:
+    build: ./database
+    container_name: paqtrack_db_central
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: paqtrack_db
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_central_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
-      timeout: 5s
-      retries: 15
-      start_period: 30s
+      timeout: 3s
+      retries: 10
 
-  # ── Backend Node.js ────────────────────────────────────────────────────────
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+  # ─── BACKEND CENTRAL ─────────────────────────────────────────────────────────
+  backend_central:
+    build: ./backend
     container_name: paqtrack_api
+    restart: unless-stopped
     ports:
       - "3000:3000"
-    env_file: .env
+    environment:
+      DB_HOST: db_central
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: paqtrack_db
+      JWT_SECRET: clave_secreta_cambiar_en_produccion
+      SYNC_API_KEY: sync_secret_key
+      PORT: 3000
     depends_on:
-      db:
+      db_central:
         condition: service_healthy
-    # El propio index.js hace retry interno a MySQL,
-    # así que aunque el healthcheck pase tarde el backend aguanta.
+
+  # ─── BASE DE DATOS CLIENTE ───────────────────────────────────────────────────
+  db_cliente:
+    build: ./database
+    container_name: paqtrack_db_cliente
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: paqtrack_cliente
+    volumes:
+      - db_cliente_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ─── BACKEND CLIENTE ─────────────────────────────────────────────────────────
+  backend_cliente:
+    build: ./backend_cliente
+    container_name: paqtrack_cliente
+    restart: unless-stopped
+    environment:
+      DB_HOST: db_cliente
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: paqtrack_cliente
+      CENTRAL_URL: http://backend_central:3000
+      SYNC_API_KEY: sync_secret_key
+      CODIGO_EMPRESA: 1
+    depends_on:
+      db_cliente:
+        condition: service_healthy
+      backend_central:
+        condition: service_started
 
 volumes:
-  mysql_data:
+  db_central_data:
+  db_cliente_data:
