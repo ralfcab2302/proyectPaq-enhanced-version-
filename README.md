@@ -236,4 +236,8 @@ PORT=3000
 SYNC_API_KEY=sync_secret_key
 ```
 
+<<<<<<< HEAD
 > ⚠️ Cambia `JWT_SECRET` y `SYNC_API_KEY` por valores seguros antes de desplegar en producción.
+=======
+> ⚠️ Cambia `JWT_SECRET` y `SYNC_API_KEY` por valores seguros antes de desplegar en producción.
+>>>>>>> 57644384e65def7bd0b657de17a6e05afd4fbfd5
