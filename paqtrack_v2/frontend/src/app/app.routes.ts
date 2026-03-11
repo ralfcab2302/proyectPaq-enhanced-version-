@@ -22,7 +22,7 @@
       loadComponent: () => import('./pages/busqueda/busqueda').then((m) => m.Busqueda),
     },
     {
-      path: '**',
+      path: '**',   
       redirectTo: 'login',
     },
   ];

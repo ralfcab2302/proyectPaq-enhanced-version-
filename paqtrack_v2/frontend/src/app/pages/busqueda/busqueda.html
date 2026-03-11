@@ -1,1 +1,36 @@
-<p>busqueda works!</p>
+<div class="min-h-screen bg-slate-900">
+
+  <!-- NAVBAR igual que dashboard -->
+  <app-nabvar></app-nabvar>
+
+  <!-- CONTENIDO -->
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+
+    <div class="mb-8 text-center">
+      <h1 class="text-2xl font-bold text-white">Buscar paquete</h1>
+      <p class="text-slate-500 mt-1 text-sm">Introduce el código de barras para ver el historial</p>
+    </div>
+
+    <!-- Buscador -->
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+      <div class="flex gap-3">
+        <input type="text" placeholder="Ej: ABC123456789"
+          class="flex-1 border border-slate-600 bg-slate-700 text-white rounded-lg px-4 py-2.5 outline-blue-400 placeholder-slate-500 focus:border-blue-400 transition-colors text-sm" />
+        <button
+          class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg transition-colors text-sm font-medium">
+          Buscar
+        </button>
+      </div>
+
+      <!-- Resultados placeholder -->
+      <div class="mt-6 text-center py-10 text-slate-600">
+        <svg class="w-10 h-10 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <p class="text-sm">Introduce un código para buscar</p>
+      </div>
+    </div>
+
+  </main>
+
+</div>

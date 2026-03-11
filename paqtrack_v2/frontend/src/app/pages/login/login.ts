@@ -29,7 +29,11 @@ export class Login {
 
         this.cargando.set(false);
         this.auth.guardarSesion(data);
-        this.router.navigate(['/dashboard']);
+        if (data.usuario.rol === 'usuario') {
+          this.router.navigate(['/busqueda']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: () => {
         this.error.set('Credenciales incorrectas');

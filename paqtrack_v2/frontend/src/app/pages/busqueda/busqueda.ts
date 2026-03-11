@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Nabvar } from "../nabvar/nabvar";
 
 @Component({
   selector: 'app-busqueda',
-  imports: [],
+  imports: [Nabvar],
   templateUrl: './busqueda.html',
   styleUrl: './busqueda.css',
 })
