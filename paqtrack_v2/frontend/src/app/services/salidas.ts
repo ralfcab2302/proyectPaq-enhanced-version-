@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Salida } from '../models/models';
+import { EstadisticasResponse, Salida } from '../models/models';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +28,9 @@ export class Salidas {
   buscarPorCodigoBarras(codigo_barras: string) {
     return this.http.get<{ salidas: Salida[] }>(`${this.apiUrl}/salidas/buscar/${codigo_barras}`);
   }
-  estadisticas() {
-    return this.http.get(`${this.apiUrl}/salidas/estadisticas`);
+  estadisticas(params?: { desde?: string; hasta?: string }) {
+    return this.http.get<EstadisticasResponse>(`${this.apiUrl}/salidas/estadisticas`, {
+      params: params as any,
+    });
   }
 }
