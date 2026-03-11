@@ -6,4 +6,8 @@ import { Component } from '@angular/core';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {}
+export class Dashboard {
+  protected rolUser = localStorage.getItem('usuario')
+    ? JSON.parse(localStorage.getItem('usuario')!).rol
+    : null;
+}

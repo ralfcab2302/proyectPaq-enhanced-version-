@@ -70,6 +70,16 @@ services:
       backend_central:
         condition: service_started
 
+  # ─── FRONTEND ────────────────────────────────────────────────────────────────
+  frontend:
+    build: ./frontend
+    container_name: paqtrack_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend_central
+
 volumes:
   db_central_data:
   db_cliente_data:

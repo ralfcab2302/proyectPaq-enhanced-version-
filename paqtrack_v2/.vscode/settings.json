@@ -1,0 +1,6 @@
+{
+    "workbench.view.showQuietly": {
+        "workbench.panel.output": false
+    },
+    "telemetry.editStats.showStatusBar": false
+}

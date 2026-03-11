@@ -8,16 +8,16 @@ import { AuthService } from '../../services/auth';
   templateUrl: './login.html',
   styleUrl: './login.css',
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule],
 })
 export class Login {
-  private auth   = inject(AuthService);
+  private auth = inject(AuthService);
   private router = inject(Router);
 
-  correo     = '';
+  correo = '';
   contrasena = '';
-  error      = signal('');
-  cargando   = signal(false);
+  error = signal('');
+  cargando = signal(false);
 
   comprobarUser() {
     this.cargando.set(true);
@@ -25,6 +25,8 @@ export class Login {
 
     this.auth.login(this.correo, this.contrasena).subscribe({
       next: (data) => {
+        console.log('Respuesta login:', data);
+
         this.cargando.set(false);
         this.auth.guardarSesion(data);
         this.router.navigate(['/dashboard']);
@@ -32,7 +34,7 @@ export class Login {
       error: () => {
         this.error.set('Credenciales incorrectas');
         this.cargando.set(false);
-      }
+      },
     });
   }
 }
