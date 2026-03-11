@@ -18,8 +18,9 @@ Sistema de seguimiento de paquetes por salidas de máquinas clasificadoras. Cada
 - setInterval — Sincronización periódica sin dependencias externas
 
 **Frontend**
-- Angular 17 — Standalone components
-- Tailwind CSS — Estilos
+- Angular 21 — Standalone components
+- Tailwind CSS 4 — Estilos
+- ApexCharts 3.46 — Gráficos (cargado vía CDN)
 
 ---
 
@@ -44,8 +45,8 @@ paqtrack_v2/
 │       │   ├── auth.controller.js
 │       │   ├── empresa.controller.js
 │       │   ├── usuarios.controller.js
-│       │   ├── salidas.controller.js
-│       │   └── sync.controller.js   # Recibe datos del backend cliente
+│       │   ├── salidas.controller.js  # Incluye endpoint /estadisticas
+│       │   └── sync.controller.js     # Recibe datos del backend cliente
 │       ├── routes/
 │       │   ├── auth.routes.js
 │       │   ├── empresa.routes.js
@@ -66,14 +67,15 @@ paqtrack_v2/
 └── frontend/
     └── frontend-angular/
         └── src/app/
-            ├── models/models.ts     # Interfaces TypeScript
+            ├── models/models.ts     # Interfaces TypeScript (incluye EstadisticasResponse)
             ├── services/            # auth, empresa, salidas, usuarios
             ├── guards/
             │   └── auth.guard.ts    # Protege rutas privadas
             └── pages/
-                ├── login/
-                ├── dashboard/       # Vista diferente según rol
-                └── busqueda/
+                ├── login/           # Login animado
+                ├── nabvar/          # Navbar compartido
+                ├── dashboard/       # Vista con gráficos según rol
+                └── busqueda/        # Búsqueda por código de barras (rol usuario)
 ```
 
 ---
@@ -120,13 +122,23 @@ El `backend_cliente` guarda en su tabla `sync_log` la fecha de la última sincro
 
 ---
 
-## Roles
+## Roles y vistas
 
-| Rol | Permisos |
-|---|---|
-| **superadmin** | Ve todo — empresas, usuarios y salidas de todas las empresas |
-| **admin** | Ve solo su empresa — usuarios y salidas propias |
-| **usuario** | Solo puede buscar paquetes por código de barras |
+| Rol | Ruta | Permisos |
+|---|---|---|
+| **superadmin** | `/dashboard` | Ve todo — empresas, usuarios y salidas de todas las empresas. Accede a gráficos globales |
+| **admin** | `/dashboard` | Ve solo su empresa — usuarios y salidas propias |
+| **usuario** | `/busqueda` | Solo puede buscar paquetes por código de barras |
+
+### Gráficos del dashboard (solo superadmin)
+
+| Gráfico | Tipo | Datos |
+|---|---|---|
+| Paquetes por empresa | Pie | Distribución total acumulada por empresa |
+| Salidas totales por fecha | Area | Evolución diaria de los últimos 30 días |
+| Salidas por empresa hoy | Barras | Comparativa de actividad del día actual |
+
+> Los gráficos se renderizan con ApexCharts cargado desde CDN. No requiere instalar `ng-apexcharts`.
 
 ---
 
@@ -141,11 +153,12 @@ El `backend_cliente` guarda en su tabla `sync_log` la fecha de la última sincro
 docker-compose up --build
 ```
 
-Levanta 4 contenedores:
+Levanta 5 contenedores:
 - `paqtrack_db_central` — MySQL BD central
 - `paqtrack_api` — Backend central en puerto 3000
 - `paqtrack_db_cliente` — MySQL BD del cliente (simulación)
 - `paqtrack_cliente` — Script de sync, sincroniza cada 15 min
+- `paqtrack_frontend` — Angular + Nginx en puerto 80
 
 Al arrancar por primera vez:
 ```
@@ -171,6 +184,16 @@ docker-compose down
 ```bash
 docker-compose down -v
 ```
+
+### Desarrollo frontend
+
+```bash
+cd frontend/frontend-angular
+npm install
+npm start
+```
+
+> La `apiUrl` en `environment.ts` apunta a `http://localhost:3000/api`.
 
 ---
 
@@ -211,9 +234,19 @@ docker-compose down -v
 | Método | Ruta | Descripción | Rol mínimo |
 |---|---|---|---|
 | GET | /api/salidas | Lista con filtros y paginación | usuario |
-| GET | /api/salidas/estadisticas | Estadísticas | usuario |
+| GET | /api/salidas/estadisticas | Totales por empresa, por día y por salida | usuario |
 | GET | /api/salidas/buscar/:codigoBarras | Historial de un paquete | usuario |
 | GET | /api/salidas/:id | Detalle de una salida | usuario |
+
+#### Parámetros de `/api/salidas`
+| Param | Tipo | Descripción |
+|---|---|---|
+| desde | string | Fecha inicio (ISO) |
+| hasta | string | Fecha fin (ISO) |
+| nro_salida | number | Filtrar por número de cinta |
+| codigo_barras | string | Filtrar por código |
+| pagina | number | Paginación (default 1) |
+| limite | number | Registros por página (default 50) |
 
 ### Sync (uso interno)
 | Método | Ruta | Descripción | Auth |
@@ -236,8 +269,4 @@ PORT=3000
 SYNC_API_KEY=sync_secret_key
 ```
 
-<<<<<<< HEAD
 > ⚠️ Cambia `JWT_SECRET` y `SYNC_API_KEY` por valores seguros antes de desplegar en producción.
-=======
-> ⚠️ Cambia `JWT_SECRET` y `SYNC_API_KEY` por valores seguros antes de desplegar en producción.
->>>>>>> 57644384e65def7bd0b657de17a6e05afd4fbfd5
