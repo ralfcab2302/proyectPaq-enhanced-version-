@@ -34,7 +34,7 @@ export class Dashboard implements OnInit {
 
   protected totalHoy = signal(0);
   protected totalMes = signal(0);
-
+  protected hayDayos = signal(false);
   // ── NUEVO ──────────────────────────────────────
   private chartDonut: any = null;
   private chartLine: any = null;
@@ -93,7 +93,16 @@ export class Dashboard implements OnInit {
       },
     });
     this.salidas.estadisticas({ desde: inicioHoy, hasta: finHoy }).subscribe({
-      next: (data) => this.renderColumnas(data),
+      next: (data) => {
+        this.renderColumnas(data);
+        console.log('estadisticas hoy:', data); // ← ¿llegan datos?
+        console.log('porEmpresa hoy:', data.porEmpresa);
+        if(data.porEmpresa?.length) {
+          this.hayDayos.set(true);
+        } else {
+          this.hayDayos.set(false);
+        }
+      },
     });
   }
 
