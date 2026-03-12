@@ -1,130 +1,88 @@
-"use strict"; 
+"use strict";
 
-// Importa la conexión a la base de datos desde el archivo de configuración
 import { pool } from "../config/db.js";
-
-// Importa bcrypt para poder encriptar las contraseñas
 import bcrypt from "bcryptjs";
 
-// Array con empresas de ejemplo que se insertarán en la base de datos
 const empresas = [
-    { nombre: "GLS", contacto: "gls@gls.com" },
-    { nombre: "SEUR", contacto: "seur@seur.com" },
-    { nombre: "MRW", contacto: "mrw@mrw.com" }
+  { nombre: "El Corte Inglés", contacto: "eci@elcorteingles.es" },
+  { nombre: "Silbon", contacto: "info@silbon.es" },
+  { nombre: "Zara", contacto: "zara@inditex.com" },
+  { nombre: "Mango", contacto: "mango@mango.com" },
+  { nombre: "MediaMarkt", contacto: "info@mediamarkt.es" },
+  { nombre: "Decathlon", contacto: "decathlon@decathlon.es" },
+  { nombre: "IKEA", contacto: "ikea@ikea.es" },
+  { nombre: "Apple", contacto: "apple@apple.com" },
+  { nombre: "Samsung", contacto: "samsung@samsung.es" },
+  { nombre: "Leroy Merlin", contacto: "info@leroymerlin.es" },
+  { nombre: "Nike", contacto: "nike@nike.com" },
+  { nombre: "Adidas", contacto: "adidas@adidas.es" },
+  { nombre: "Pull&Bear", contacto: "pullbear@inditex.com" },
+  { nombre: "Bershka", contacto: "bershka@inditex.com" },
+  { nombre: "H&M", contacto: "hm@hm.com" },
+  { nombre: "Springfield", contacto: "springfield@workinprogress.es" },
+  { nombre: "Primark", contacto: "primark@primark.com" },
+  { nombre: "Amazon", contacto: "amazon@amazon.es" },
+  { nombre: "Fnac", contacto: "fnac@fnac.es" },
+  { nombre: "PC Componentes", contacto: "info@pccomponentes.com" },
+  { nombre: "Worten", contacto: "worten@worten.es" },
+  { nombre: "Carrefour", contacto: "carrefour@carrefour.es" },
+  { nombre: "Lidl", contacto: "lidl@lidl.es" },
+  { nombre: "Alcampo", contacto: "alcampo@auchan.es" },
+  { nombre: "Mercadona", contacto: "mercadona@mercadona.es" },
 ];
 
+const codigoBarrasAleatorio = () => {
+  const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numeros = "0123456789";
+  return (
+    Array.from({ length: 3 }, () => letras[Math.floor(Math.random() * letras.length)]).join('') +
+    Array.from({ length: 9 }, () => numeros[Math.floor(Math.random() * numeros.length)]).join('')
+  );
+};
 
-// Genera un código de barras aleatorio
-// Formato: 3 letras + 9 números (ejemplo: ABC123456789)
-function codigoBarrasAleatorio() {
-    const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const numeros = "0123456789";
-    let codigo = "";
+const fechaAleatoria = (soloHoy = false) => {
+  const fecha = new Date();
+  if (!soloHoy) fecha.setDate(fecha.getDate() - Math.floor(Math.random() * 30));
+  fecha.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60), 0);
+  return fecha;
+};
 
-    // Genera 3 letras aleatorias
-    for (let i = 0; i < 3; i++) 
-        codigo += letras[Math.floor(Math.random() * letras.length)];
+const insertarSalidas = async (codigoEmpresa, cantidad, soloHoy = false) => {
+  for (let i = 0; i < cantidad; i++) {
+    await pool.query(
+      "INSERT INTO salidas (codigo_empresa, nro_salida, codigo_barras, fecha_salida) VALUES (?, ?, ?, ?)",
+      [codigoEmpresa, Math.floor(Math.random() * 40) + 1, codigoBarrasAleatorio(), fechaAleatoria(soloHoy)]
+    );
+  }
+};
 
-    // Genera 9 números aleatorios
-    for (let i = 0; i < 9; i++) 
-        codigo += numeros[Math.floor(Math.random() * numeros.length)];
-
-    return codigo;
-}
-
-
-// Genera una fecha aleatoria dentro de los últimos 30 días
-function fechaAleatoria() {
-    const ahora = new Date();
-
-    // Número de días aleatorios hacia atrás (0-29)
-    const diasAtras = Math.floor(Math.random() * 30);
-
-    // Hora y minutos aleatorios
-    const horasAleatorias = Math.floor(Math.random() * 24);
-    const minutosAleatorios = Math.floor(Math.random() * 60);
-
-    // Resta los días aleatorios a la fecha actual
-    ahora.setDate(ahora.getDate() - diasAtras);
-
-    // Establece hora y minutos aleatorios
-    ahora.setHours(horasAleatorias, minutosAleatorios, 0);
-
-    return ahora;
-}
-
-
-// Función principal que inserta datos de prueba en la base de datos
 export async function datosSeeder() {
+  const [existe] = await pool.query("SELECT codigo FROM empresa LIMIT 1");
+  if (existe.length > 0) {
+    console.log("ℹ️  Datos ya existen, saltando seeder");
+    return;
+  }
 
-    // Comprueba si ya existen empresas en la base de datos
-    const [empresasExistentes] = await pool.query("SELECT codigo FROM empresa LIMIT 1");
+  const hash = await bcrypt.hash("admin123", 10);
+  const hashUsuario = await bcrypt.hash("usuario123", 10);
 
-    // Si ya hay datos, se cancela el seeder
-    if (empresasExistentes.length > 0) {
-        console.log("ℹ️  Datos de ejemplo ya existen, saltando seeder");
-        return;
-    }
+  for (const empresa of empresas) {
+    const [res] = await pool.query(
+      "INSERT INTO empresa (nombre, contacto) VALUES (?, ?)",
+      [empresa.nombre, empresa.contacto]
+    );
+    const id = res.insertId;
+    const slug = empresa.nombre.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    // Encripta la contraseña del admin
-    const hash = await bcrypt.hash("admin123", 10);
+    await pool.query("INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)", [id, `admin@${slug}.com`, hash, "admin"]);
+    await pool.query("INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)", [id, `usuario1@${slug}.com`, hashUsuario, "usuario"]);
+    await pool.query("INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)", [id, `usuario2@${slug}.com`, hashUsuario, "usuario"]);
 
-    // Encripta la contraseña de los usuarios normales
-    const hashUsuario = await bcrypt.hash("usuario123", 10);
+    await insertarSalidas(id, 40);        // 40 aleatorias últimos 30 días
+    await insertarSalidas(id, 10, true);  // 10 de hoy
 
-    // Recorre cada empresa del array
-    for (const empresa of empresas) {
+    console.log(`✅ ${empresa.nombre}`);
+  }
 
-        // Inserta la empresa en la base de datos
-        const [resultEmpresa] = await pool.query(
-            "INSERT INTO empresa (nombre, contacto) VALUES (?, ?)",
-            [empresa.nombre, empresa.contacto]
-        );
-
-        // Obtiene el ID generado automáticamente
-        const codigoEmpresa = resultEmpresa.insertId;
-
-        // Inserta un usuario administrador para la empresa
-        await pool.query(
-            "INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)",
-            [codigoEmpresa, `admin@${empresa.nombre.toLowerCase()}.com`, hash, "admin"]
-        );
-
-        // Inserta el primer usuario normal
-        await pool.query(
-            "INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)",
-            [codigoEmpresa, `usuario1@${empresa.nombre.toLowerCase()}.com`, hashUsuario, "usuario"]
-        );
-
-        // Inserta el segundo usuario normal
-        await pool.query(
-            "INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)",
-            [codigoEmpresa, `usuario2@${empresa.nombre.toLowerCase()}.com`, hashUsuario, "usuario"]
-        );
-
-        // Genera 300 registros de salidas para cada empresa
-        for (let i = 0; i < 300; i++) {
-
-            // Número de salida aleatorio entre 1 y 40
-            const nroSalida = Math.floor(Math.random() * 40) + 1
-
-            // Genera código de barras aleatorio
-            const codBarras = codigoBarrasAleatorio();
-
-            // Genera fecha aleatoria
-            const fecha = fechaAleatoria();
-
-            // Inserta la salida en la base de datos
-            await pool.query(
-                "INSERT INTO salidas (codigo_empresa, nro_salida, codigo_barras, fecha_salida) VALUES (?, ?, ?, ?)",
-                [codigoEmpresa, nroSalida, codBarras, fecha]
-            );
-        }
-
-        // Mensaje en consola indicando que la empresa fue creada
-        console.log(`✅ ${empresa.nombre} creada con 300 salidas`);
-    }
-
-    // Mensaje final cuando el seeder termina
-    console.log("✅ Seeder de datos completado");
+  console.log("✅ Seeder completado — 25 empresas, 50 salidas cada una (10 de hoy)");
 }
