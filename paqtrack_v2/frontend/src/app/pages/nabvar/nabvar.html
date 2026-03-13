@@ -21,7 +21,7 @@
         Busqueda de paquete
       </button>
       }
-      @if (rutaActual()==="/busqueda") {
+      @if (rutaActual()==="/busqueda" && rolUser!='usuario') {
       <button (click)="redirigirDashboard()" class=" text-sm bg-slate-700 hover:bg-green-600 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg
           transition-all duration-200">
         Vuelta a Dashboard

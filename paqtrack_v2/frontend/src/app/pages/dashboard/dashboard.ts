@@ -43,14 +43,26 @@ export class Dashboard implements OnInit, OnDestroy {
   protected filtroNroSalida = signal('');
   protected filtroEmpresa = signal('');
   protected cargandoFiltro = signal(false);
-
+  protected empresasSelect: string[] = [];
   // Instancias Chart.js
   private chartDonut: any = null;
   private chartLine: any = null;
   private chartColumn: any = null;
 
-  private readonly COLORES = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
-    '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7'];
+  private readonly COLORES = [
+    '#3b82f6',
+    '#8b5cf6',
+    '#10b981',
+    '#f59e0b',
+    '#ef4444',
+    '#06b6d4',
+    '#ec4899',
+    '#14b8a6',
+    '#f97316',
+    '#6366f1',
+    '#84cc16',
+    '#a855f7',
+  ];
 
   cerrarSesion() {
     this.authService.logout();
@@ -60,8 +72,9 @@ export class Dashboard implements OnInit, OnDestroy {
   ngOnInit(): void {
     const hoy = new Date();
     const inicioHoy = hoy.toISOString().slice(0, 10) + ' 00:00:00';
-    const finHoy   = hoy.toISOString().slice(0, 10) + ' 23:59:59';
-    const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString().slice(0, 10) + ' 00:00:00';
+    const finHoy = hoy.toISOString().slice(0, 10) + ' 23:59:59';
+    const inicioMes =
+      new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString().slice(0, 10) + ' 00:00:00';
 
     this.salidas.getAll({ desde: inicioHoy, hasta: finHoy }).subscribe({
       next: (data) => this.totalHoy.set(data.total),
@@ -96,21 +109,24 @@ export class Dashboard implements OnInit, OnDestroy {
   protected buscarConFiltros() {
     this.cargandoFiltro.set(true);
 
+    // Ocultar gráficos al buscar
+    const contenedor = document.getElementById('graficos-container');
+    if (contenedor) contenedor.style.display = 'none';
+
     const params: any = {};
-    if (this.filtroDesde())     params.desde      = this.filtroDesde() + ' 00:00:00';
-    if (this.filtroHasta())     params.hasta      = this.filtroHasta() + ' 23:59:59';
+    if (this.filtroDesde()) params.desde = this.filtroDesde() + ' 00:00:00';
+    if (this.filtroHasta()) params.hasta = this.filtroHasta() + ' 23:59:59';
     if (this.filtroNroSalida()) params.nro_salida = Number(this.filtroNroSalida());
 
     this.salidas.getAll(params).subscribe({
       next: (data) => {
         let resultado = data.salidas;
         if (this.filtroEmpresa()) {
-          resultado = resultado.filter(s =>
-            s.nombre_empresa?.toLowerCase().includes(this.filtroEmpresa().toLowerCase())
+          resultado = resultado.filter((s) =>
+            s.nombre_empresa?.toLowerCase().includes(this.filtroEmpresa().toLowerCase()),
           );
         }
         this.aregloSalida.set(resultado);
-        this.totalSalidas.set(data.total);
         this.cargandoFiltro.set(false);
       },
       error: () => this.cargandoFiltro.set(false),
@@ -122,10 +138,14 @@ export class Dashboard implements OnInit, OnDestroy {
     this.filtroHasta.set('');
     this.filtroNroSalida.set('');
     this.filtroEmpresa.set('');
+
+    // Mostrar gráficos al limpiar
+    const contenedor = document.getElementById('graficos-container');
+    if (contenedor) contenedor.style.display = 'block';
+
     this.salidas.getAll().subscribe({
       next: (data) => {
         this.aregloSalida.set(data.salidas);
-        this.totalSalidas.set(data.total);
       },
     });
   }
@@ -163,19 +183,24 @@ export class Dashboard implements OnInit, OnDestroy {
     this.chartDonut = this.renderChart('chart-donut', this.chartDonut, {
       type: 'doughnut',
       data: {
-        labels: data.porEmpresa.map(e => e.nombre_empresa || 'Sin nombre'),
-        datasets: [{
-          data: data.porEmpresa.map(e => Number(e.total)),
-          backgroundColor: this.COLORES,
-          borderWidth: 0,
-          hoverOffset: 6,
-        }],
+        labels: data.porEmpresa.map((e) => e.nombre_empresa || 'Sin nombre'),
+        datasets: [
+          {
+            data: data.porEmpresa.map((e) => Number(e.total)),
+            backgroundColor: this.COLORES,
+            borderWidth: 0,
+            hoverOffset: 6,
+          },
+        ],
       },
       options: {
         responsive: true,
         cutout: '65%',
         plugins: {
-          legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 16, font: { size: 12 } } },
+          legend: {
+            position: 'bottom',
+            labels: { color: '#94a3b8', padding: 16, font: { size: 12 } },
+          },
           tooltip: { callbacks: { label: (ctx: any) => ` ${ctx.label}: ${ctx.parsed}` } },
         },
       },
@@ -187,20 +212,22 @@ export class Dashboard implements OnInit, OnDestroy {
     this.chartLine = this.renderChart('chart-line', this.chartLine, {
       type: 'line',
       data: {
-        labels: data.porDia.map(d =>
-          new Date(d.dia).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+        labels: data.porDia.map((d) =>
+          new Date(d.dia).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
         ),
-        datasets: [{
-          label: 'Salidas',
-          data: data.porDia.map(d => Number(d.total)),
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59,130,246,0.1)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointBackgroundColor: '#3b82f6',
-          fill: true,
-          tension: 0.4,
-        }],
+        datasets: [
+          {
+            label: 'Salidas',
+            data: data.porDia.map((d) => Number(d.total)),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: '#3b82f6',
+            fill: true,
+            tension: 0.4,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -221,14 +248,16 @@ export class Dashboard implements OnInit, OnDestroy {
     this.chartColumn = this.renderChart('chart-column', this.chartColumn, {
       type: 'bar',
       data: {
-        labels: data.porEmpresa.map(e => e.nombre_empresa || 'Sin nombre'),
-        datasets: [{
-          label: 'Salidas hoy',
-          data: data.porEmpresa.map(e => Number(e.total)),
-          backgroundColor: this.COLORES,
-          borderRadius: 6,
-          borderWidth: 0,
-        }],
+        labels: data.porEmpresa.map((e) => e.nombre_empresa || 'Sin nombre'),
+        datasets: [
+          {
+            label: 'Salidas hoy',
+            data: data.porEmpresa.map((e) => Number(e.total)),
+            backgroundColor: this.COLORES,
+            borderRadius: 6,
+            borderWidth: 0,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -244,9 +273,17 @@ export class Dashboard implements OnInit, OnDestroy {
     });
   }
 
+  cargarSelectEmpresas() {
+    this.empresas.getAll().subscribe({
+      next: (data) => {
+        this.empresasSelect = data.empresas.map((e) => e.nombre);
+      },
+    });
+  }
+
   ngOnDestroy() {
-    if (this.chartDonut)  this.chartDonut.destroy();
-    if (this.chartLine)   this.chartLine.destroy();
+    if (this.chartDonut) this.chartDonut.destroy();
+    if (this.chartLine) this.chartLine.destroy();
     if (this.chartColumn) this.chartColumn.destroy();
   }
 }

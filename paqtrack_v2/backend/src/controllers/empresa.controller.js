@@ -31,7 +31,7 @@ export const getById = async (req, res) => {
 
     return res.status(200).json({ empresa: rows[0] });
 
-  } catch (error) {
+  } catch (error) {l
     return res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
