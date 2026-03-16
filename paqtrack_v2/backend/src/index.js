@@ -15,14 +15,23 @@ import { datosSeeder } from "./seeders/datos.seeder.js";
 
 const server = express();
 
-const corsOpciones = {
-  origin: "*",
+// Cabeceras CORS manuales — van ANTES de todo
+server.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, x-api-key");
+  if (req.method === "OPTIONS") return res.status(204).end();
+  next();
+});
+
+server.use(cors({
+  origin: (origin, callback) => callback(null, true),
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
+  credentials: true,
   optionsSuccessStatus: 204
-};
-server.use(cors(corsOpciones));
-server.options("*", cors(corsOpciones));
+}));
+server.options("*", cors());
 server.use(express.json());
 
 server.get("/", (_req, res) => res.json({ mensaje: "PaqTrack API v2 funcionando" }));
@@ -54,7 +63,7 @@ async function arrancar() {
   await esperarMySQL();
   await initDB();
   await superadminSeeder();
-  await datosSeeder()
+  await datosSeeder();
 
   server.listen(3000, () => {
     console.log("🚀 Servidor en http://localhost:3000");
