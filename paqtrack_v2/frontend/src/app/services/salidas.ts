@@ -14,7 +14,7 @@ export class Salidas {
     nro_salida?: number;
     codigo_barras?: string;
     desde?: string;
-    hasta?: string;
+    hasta?: string;--
     pagina?: number;
     limite?: number;
   }) {
