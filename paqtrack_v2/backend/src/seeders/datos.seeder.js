@@ -41,9 +41,15 @@ const codigoBarrasAleatorio = () => {
 };
 
 const fechaAleatoria = (soloHoy = false) => {
-  const fecha = new Date();
-  if (!soloHoy) fecha.setDate(fecha.getDate() - Math.floor(Math.random() * 30));
-  fecha.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60), 0);
+  const ahora = new Date();
+  const fecha = new Date(
+    ahora.getFullYear(),
+    ahora.getMonth(),
+    soloHoy ? ahora.getDate() : ahora.getDate() - Math.floor(Math.random() * 30),
+    Math.floor(Math.random() * 24),
+    Math.floor(Math.random() * 60),
+    0
+  );
   return fecha;
 };
 
