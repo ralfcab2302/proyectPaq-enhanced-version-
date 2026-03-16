@@ -39,12 +39,13 @@ async function esperarMySQL(intentos = 15) {
       const conn = await pool.getConnection();
       conn.release();
       console.log("✅ MySQL listo");
+      await new Promise(r => setTimeout(r, 6000));
       return;
     } catch {
       console.log(`⏳ Esperando MySQL... intento ${i}/${intentos}`);
       await new Promise(r => setTimeout(r, 3000));
     }
-  } 
+  }
   console.error("❌ No se pudo conectar a MySQL");
   process.exit(1);
 }
