@@ -147,7 +147,6 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-slate-700">
-              <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Código</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Código barras
               </th>
               <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Salida</th>
@@ -158,7 +157,6 @@
           <tbody>
             @for (salida of aregloSalida(); track salida.codigo) {
             <tr class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors">
-              <td class="px-4 py-3 text-slate-300">{{ salida.codigo }}</td>
               <td class="px-4 py-3 text-slate-300 font-mono">{{ salida.codigo_barras }}</td>
               <td class="px-4 py-3 text-slate-300">{{ salida.nro_salida }}</td>
               <td class="px-4 py-3 text-slate-300">{{ salida.nombre_empresa }}</td>
