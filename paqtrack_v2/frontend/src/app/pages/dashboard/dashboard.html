@@ -171,7 +171,7 @@
               <td class="px-4 py-3 text-slate-300 font-mono">{{ salida.codigo_barras }}</td>
               <td class="px-4 py-3 text-slate-300">{{ salida.nro_salida }}</td>
               <td class="px-4 py-3 text-slate-300">{{ salida.nombre_empresa }}</td>
-              <td class="px-4 py-3 text-slate-400">{{ salida.fecha_salida }}</td>
+              <td class="px-4 py-3 text-slate-400">{{ salida.fecha_salida | date:'shortDate' }}</td>
             </tr>
             }
           </tbody>
