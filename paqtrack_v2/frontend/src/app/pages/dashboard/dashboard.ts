@@ -69,7 +69,9 @@ export class Dashboard implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
   protected onEmpresaChange(valor: string) {
+    console.log('valor empresa:', valor);
     this.filtroEmpresa.set(+valor || null);
+    console.log('filtroEmpresa signal:', this.filtroEmpresa());
     this.buscarConFiltros();
   }
 
@@ -129,6 +131,7 @@ export class Dashboard implements OnInit, OnDestroy {
       },
       error: () => this.cargandoFiltro.set(false),
     });
+    console.log('params enviados:', params);
   }
 
   protected limpiarFiltros() {
