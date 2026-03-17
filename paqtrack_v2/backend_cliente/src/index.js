@@ -2,7 +2,7 @@ import { pool } from "./db.js";
 import { initClienteDB } from "./db.init.js";
 import { sincronizar } from "./sync.js";
 
-const INTERVALO_MS = 15 * 60 * 1000; // 15 minutos en milisegundos
+const INTERVALO_MS = 5 * 1000; // 15 minutos en milisegundos
 
 async function esperarMySQL(intentos = 15) {
   for (let i = 1; i <= intentos; i++) {
