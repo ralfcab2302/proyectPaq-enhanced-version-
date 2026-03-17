@@ -1,4 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
 import { Nabvar } from '../nabvar/nabvar';
@@ -8,20 +9,17 @@ import { EmpresaService } from '../../services/empresa';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Nabvar],
+  imports: [Nabvar, DatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit, OnDestroy {
   protected rolUser = localStorage.getItem('usuario')
-    ? JSON.parse(localStorage.getItem('usuario')!).rol
-    : null;
+    ? JSON.parse(localStorage.getItem('usuario')!).rol : null;
   protected nombreUser = localStorage.getItem('usuario')
-    ? JSON.parse(localStorage.getItem('usuario')!).nombre
-    : null;
+    ? JSON.parse(localStorage.getItem('usuario')!).nombre : null;
   protected correoUser = localStorage.getItem('usuario')
-    ? JSON.parse(localStorage.getItem('usuario')!).correo
-    : null;
+    ? JSON.parse(localStorage.getItem('usuario')!).correo : null;
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -37,48 +35,36 @@ export class Dashboard implements OnInit, OnDestroy {
   protected hayDayos = signal(false);
   cargando = signal(true);
 
-  // Filtros tabla
   protected filtroDesde = signal('');
   protected filtroHasta = signal('');
   protected filtroNroSalida = signal('');
   protected filtroEmpresa = signal<number | null>(null);
   protected cargandoFiltro = signal(false);
   protected empresasSelect: { codigo: number; nombre: string }[] = [];
-  // Instancias Chart.js
-  private chartDonut: any = null;
-  private chartLine: any = null;
-  private chartColumn: any = null;
-
   protected paginaActual = signal(1);
   protected totalPaginas = signal(1);
 
   private mapaEmpresas: Map<string, number> = new Map();
 
+  private chartDonut: any = null;
+  private chartLine: any = null;
+  private chartColumn: any = null;
+
   private readonly COLORES = [
-    '#3b82f6',
-    '#8b5cf6',
-    '#10b981',
-    '#f59e0b',
-    '#ef4444',
-    '#06b6d4',
-    '#ec4899',
-    '#14b8a6',
-    '#f97316',
-    '#6366f1',
-    '#84cc16',
-    '#a855f7',
+    '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
+    '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7',
   ];
 
   cerrarSesion() {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
   protected onEmpresaChange(valor: string) {
-    console.log('valor empresa:', valor);
     this.filtroEmpresa.set(+valor || null);
-    console.log('filtroEmpresa signal:', this.filtroEmpresa());
     this.buscarConFiltros();
   }
+
   protected irAPagina(pagina: number) {
     this.paginaActual.set(pagina);
     this.buscarConFiltros();
@@ -89,21 +75,18 @@ export class Dashboard implements OnInit, OnDestroy {
     const hoy = new Date();
     const inicioHoy = hoy.toISOString().slice(0, 10) + ' 00:00:00';
     const finHoy = hoy.toISOString().slice(0, 10) + ' 23:59:59';
-    const inicioMes =
-      new Date(hoy.getFullYear(), hoy.getMonth(), 1).toISOString().slice(0, 10) + ' 00:00:00';
+    const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+      .toISOString().slice(0, 10) + ' 00:00:00';
 
     this.salidas.getAll({ desde: inicioHoy, hasta: finHoy }).subscribe({
       next: (data) => this.totalHoy.set(data.total),
     });
-
     this.salidas.getAll({ desde: inicioMes }).subscribe({
       next: (data) => this.totalMes.set(data.total),
     });
-
     this.empresas.getAll().subscribe({
       next: (data) => this.totalEmpresas.set(data.empresas.length),
     });
-
     this.salidas.getAll().subscribe({
       next: (data) => {
         this.totalSalidas.set(data.total);
@@ -113,14 +96,9 @@ export class Dashboard implements OnInit, OnDestroy {
           setTimeout(() => this.cargarGraficos(inicioHoy, finHoy), 100);
         }
       },
-      error: (err) => {
-        console.error(err);
-        this.cargando.set(false);
-      },
+      error: (err) => { console.error(err); this.cargando.set(false); },
     });
   }
-
-  // ── Filtros tabla ────────────────────────────────────────────────
 
   protected buscarConFiltros(ocultarGraficos = true) {
     this.cargandoFiltro.set(true);
@@ -128,9 +106,6 @@ export class Dashboard implements OnInit, OnDestroy {
       const contenedor = document.getElementById('graficos-container');
       if (contenedor) contenedor.style.display = 'none';
     }
-    this.cargandoFiltro.set(true);
-    const contenedor = document.getElementById('graficos-container');
-    if (contenedor) contenedor.style.display = 'none';
 
     const params: any = {};
     if (this.filtroDesde()) params.desde = this.filtroDesde() + ' 00:00:00';
@@ -142,11 +117,11 @@ export class Dashboard implements OnInit, OnDestroy {
     this.salidas.getAll(params).subscribe({
       next: (data) => {
         this.aregloSalida.set(data.salidas);
-        this.totalPaginas.set(data.paginas); // ← guardar total páginas
+        this.totalPaginas.set(data.paginas);
         this.cargandoFiltro.set(false);
       },
+      error: () => this.cargandoFiltro.set(false),
     });
-    console.log('params enviados:', params);
   }
 
   protected limpiarFiltros() {
@@ -155,26 +130,16 @@ export class Dashboard implements OnInit, OnDestroy {
     this.filtroNroSalida.set('');
     this.filtroEmpresa.set(null);
     this.paginaActual.set(1);
-
-    // Mostrar gráficos al limpiar
     const contenedor = document.getElementById('graficos-container');
     if (contenedor) contenedor.style.display = 'block';
-
     this.salidas.getAll().subscribe({
-      next: (data) => {
-        this.aregloSalida.set(data.salidas);
-      },
+      next: (data) => this.aregloSalida.set(data.salidas),
     });
   }
 
-  // ── Gráficos Chart.js ────────────────────────────────────────────
-
   private cargarGraficos(inicioHoy: string, finHoy: string) {
     this.salidas.estadisticas().subscribe({
-      next: (data) => {
-        this.renderDonut(data);
-        this.renderLinea(data);
-      },
+      next: (data) => { this.renderDonut(data); this.renderLinea(data); },
     });
     this.salidas.estadisticas({ desde: inicioHoy, hasta: finHoy }).subscribe({
       next: (data) => {
@@ -201,33 +166,29 @@ export class Dashboard implements OnInit, OnDestroy {
       type: 'doughnut',
       data: {
         labels: data.porEmpresa.map((e) => e.nombre_empresa || 'Sin nombre'),
-        datasets: [
-          {
-            data: data.porEmpresa.map((e) => Number(e.total)),
-            backgroundColor: this.COLORES,
-            borderWidth: 0,
-            hoverOffset: 6,
-          },
-        ],
+        datasets: [{
+          data: data.porEmpresa.map((e) => Number(e.total)),
+          backgroundColor: this.COLORES,
+          borderWidth: 0,
+          hoverOffset: 6,
+        }],
       },
       options: {
-        onClick: (event: any, elements: any[]) => {
+        onClick: (_event: any, elements: any[]) => {
           if (elements.length > 0) {
             const label = data.porEmpresa[elements[0].index].nombre_empresa;
             const codigo = this.mapaEmpresas.get(label);
             if (codigo) {
               this.filtroEmpresa.set(codigo);
-              this.buscarConFiltros(false); // ← no ocultar gráficos
+              this.buscarConFiltros(false);
             }
           }
         },
         responsive: true,
+        maintainAspectRatio: false,
         cutout: '65%',
         plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { color: '#94a3b8', padding: 16, font: { size: 12 } },
-          },
+          legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 16, font: { size: 12 } } },
           tooltip: { callbacks: { label: (ctx: any) => ` ${ctx.label}: ${ctx.parsed}` } },
         },
       },
@@ -240,34 +201,23 @@ export class Dashboard implements OnInit, OnDestroy {
       type: 'line',
       data: {
         labels: data.porDia.map((d) =>
-          new Date(d.dia).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
+          new Date(d.dia).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
         ),
-        datasets: [
-          {
-            label: 'Salidas',
-            data: data.porDia.map((d) => Number(d.total)),
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59,130,246,0.1)',
-            borderWidth: 2,
-            pointRadius: 3,
-            pointBackgroundColor: '#3b82f6',
-            fill: true,
-            tension: 0.4,
-          },
-        ],
+        datasets: [{
+          label: 'Salidas',
+          data: data.porDia.map((d) => Number(d.total)),
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.1)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#3b82f6',
+          fill: true,
+          tension: 0.4,
+        }],
       },
       options: {
-        onClick: (event: any, elements: any[]) => {
-          if (elements.length > 0) {
-            const label = data.porEmpresa[elements[0].index].nombre_empresa;
-            const codigo = this.mapaEmpresas.get(label);
-            if (codigo) {
-              this.filtroEmpresa.set(codigo);
-              this.buscarConFiltros(false); // ← no ocultar gráficos
-            }
-          }
-        },
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: { mode: 'index', intersect: false },
@@ -286,18 +236,27 @@ export class Dashboard implements OnInit, OnDestroy {
       type: 'bar',
       data: {
         labels: data.porEmpresa.map((e) => e.nombre_empresa || 'Sin nombre'),
-        datasets: [
-          {
-            label: 'Salidas hoy',
-            data: data.porEmpresa.map((e) => Number(e.total)),
-            backgroundColor: this.COLORES,
-            borderRadius: 6,
-            borderWidth: 0,
-          },
-        ],
+        datasets: [{
+          label: 'Salidas hoy',
+          data: data.porEmpresa.map((e) => Number(e.total)),
+          backgroundColor: this.COLORES,
+          borderRadius: 6,
+          borderWidth: 0,
+        }],
       },
       options: {
+        onClick: (_event: any, elements: any[]) => {
+          if (elements.length > 0) {
+            const label = data.porEmpresa[elements[0].index].nombre_empresa;
+            const codigo = this.mapaEmpresas.get(label);
+            if (codigo) {
+              this.filtroEmpresa.set(codigo);
+              this.buscarConFiltros(false);
+            }
+          }
+        },
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: { mode: 'index', intersect: false },
