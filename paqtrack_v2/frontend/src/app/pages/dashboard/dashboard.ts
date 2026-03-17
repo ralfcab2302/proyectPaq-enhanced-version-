@@ -41,9 +41,9 @@ export class Dashboard implements OnInit, OnDestroy {
   protected filtroDesde = signal('');
   protected filtroHasta = signal('');
   protected filtroNroSalida = signal('');
-  protected filtroEmpresa = signal('');
+  protected filtroEmpresa = signal<number | null>(null);
   protected cargandoFiltro = signal(false);
-  protected empresasSelect: string[] = [];
+  protected empresasSelect: { codigo: number; nombre: string }[] = [];
   // Instancias Chart.js
   private chartDonut: any = null;
   private chartLine: any = null;
@@ -106,38 +106,31 @@ export class Dashboard implements OnInit, OnDestroy {
 
   // ── Filtros tabla ────────────────────────────────────────────────
 
-  protected buscarConFiltros() {
-    this.cargandoFiltro.set(true);
+ protected buscarConFiltros() {
+  this.cargandoFiltro.set(true);
+  const contenedor = document.getElementById('graficos-container');
+  if (contenedor) contenedor.style.display = 'none';
 
-    // Ocultar gráficos al buscar
-    const contenedor = document.getElementById('graficos-container');
-    if (contenedor) contenedor.style.display = 'none';
+  const params: any = {};
+  if (this.filtroDesde()) params.desde = this.filtroDesde() + ' 00:00:00';
+  if (this.filtroHasta()) params.hasta = this.filtroHasta() + ' 23:59:59';
+  if (this.filtroNroSalida()) params.nro_salida = Number(this.filtroNroSalida());
+  if (this.filtroEmpresa()) params.codigo_empresa = this.filtroEmpresa();
 
-    const params: any = {};
-    if (this.filtroDesde()) params.desde = this.filtroDesde() + ' 00:00:00';
-    if (this.filtroHasta()) params.hasta = this.filtroHasta() + ' 23:59:59';
-    if (this.filtroNroSalida()) params.nro_salida = Number(this.filtroNroSalida());
-
-    this.salidas.getAll(params).subscribe({
-      next: (data) => {
-        let resultado = data.salidas;
-        if (this.filtroEmpresa()) {
-          resultado = resultado.filter((s) =>
-            s.nombre_empresa?.toLowerCase().includes(this.filtroEmpresa().toLowerCase()),
-          );
-        }
-        this.aregloSalida.set(resultado);
-        this.cargandoFiltro.set(false);
-      },
-      error: () => this.cargandoFiltro.set(false),
-    });
-  }
+  this.salidas.getAll(params).subscribe({
+    next: (data) => {
+      this.aregloSalida.set(data.salidas);
+      this.cargandoFiltro.set(false);
+    },
+    error: () => this.cargandoFiltro.set(false),
+  });
+}
 
   protected limpiarFiltros() {
     this.filtroDesde.set('');
     this.filtroHasta.set('');
     this.filtroNroSalida.set('');
-    this.filtroEmpresa.set('');
+    this.filtroEmpresa.set(null);
 
     // Mostrar gráficos al limpiar
     const contenedor = document.getElementById('graficos-container');
@@ -276,7 +269,7 @@ export class Dashboard implements OnInit, OnDestroy {
   cargarSelectEmpresas() {
     this.empresas.getAll().subscribe({
       next: (data) => {
-        this.empresasSelect = data.empresas.map((e) => e.nombre);
+        this.empresasSelect = data.empresas;
       },
     });
   }

@@ -99,25 +99,29 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Desde</label>
-          <input type="date" [value]="filtroDesde()" (change)="filtroDesde.set($any($event.target).value)"
+          <input type="date" [value]="filtroDesde()"
+            (change)="filtroDesde.set($any($event.target).value); buscarConFiltros()"
             class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
         </div>
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Hasta</label>
-          <input type="date" [value]="filtroHasta()" (change)="filtroHasta.set($any($event.target).value)"
+          <input type="date" [value]="filtroHasta()"
+            (change)="filtroHasta.set($any($event.target).value); buscarConFiltros()"
             class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
         </div>
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Nº salida</label>
           <input type="number" min="1" max="40" placeholder="1 - 40" [value]="filtroNroSalida()"
-            (change)="filtroNroSalida.set($any($event.target).value)"
+            (change)="filtroNroSalida.set($any($event.target).value); buscarConFiltros()"
             class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 placeholder:text-slate-500" />
         </div>
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Empresa</label>
-          <select name="empresas" id="empresas">
-            @for (item of empresasSelect; track $index) {
-            {{item}}
+          <select (change)="filtroEmpresa.set(+$any($event.target).value || null); buscarConFiltros()"
+            class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500">
+            <option value="">Todas</option>
+            @for (e of empresasSelect; track e.codigo) {
+            <option [value]="e.codigo" [selected]="filtroEmpresa() === e.codigo">{{ e.nombre }}</option>
             }
           </select>
         </div>
