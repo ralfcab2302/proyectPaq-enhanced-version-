@@ -4,7 +4,7 @@ import { pool } from "../config/db.js";
 // Devuelve todas las salidas con filtros opcionales y paginación
 export const getAll = async (req, res) => {
   try {
-    const { nro_salida, codigo_barras, desde, hasta } = req.query;
+    const { nro_salida, codigo_barras, desde, hasta, codigo_empresa } = req.query;
     const pagina = parseInt(req.query.pagina) || 1;
     const limite = parseInt(req.query.limite) || 50;
     const offset = (pagina - 1) * limite;
@@ -18,6 +18,10 @@ export const getAll = async (req, res) => {
       params.push(req.empresaFiltro);
     }
 
+    if (codigo_empresa && req.empresaFiltro === null) {
+      condiciones.push("s.codigo_empresa = ?");
+      params.push(parseInt(codigo_empresa));
+    }
     // Filtros opcionales que llegan por query string
     if (nro_salida) {
       condiciones.push("s.nro_salida = ?");
