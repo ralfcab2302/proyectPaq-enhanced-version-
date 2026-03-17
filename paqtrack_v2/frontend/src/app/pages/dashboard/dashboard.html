@@ -75,8 +75,9 @@
         <h2 class="text-white font-semibold mb-1">Salidas por empresa — hoy</h2>
         <p class="text-slate-500 text-xs mb-4">Comparativa de actividad del día</p>
         @if (hayDayos()) {
-        <canvas id="chart-column" height="200"></canvas>
-        } @else {
+        <div style="height: 180px; position: relative;">
+          <canvas id="chart-column"></canvas>
+        </div> } @else {
         <div class="flex flex-col items-center justify-center py-12 text-slate-600">
           <svg class="w-10 h-10 mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
