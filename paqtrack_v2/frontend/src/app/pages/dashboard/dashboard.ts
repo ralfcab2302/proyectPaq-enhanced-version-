@@ -70,6 +70,7 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.cargarSelectEmpresas();
     const hoy = new Date();
     const inicioHoy = hoy.toISOString().slice(0, 10) + ' 00:00:00';
     const finHoy = hoy.toISOString().slice(0, 10) + ' 23:59:59';
