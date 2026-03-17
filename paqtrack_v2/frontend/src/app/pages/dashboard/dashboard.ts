@@ -122,7 +122,12 @@ export class Dashboard implements OnInit, OnDestroy {
 
   // ── Filtros tabla ────────────────────────────────────────────────
 
-  protected buscarConFiltros() {
+  protected buscarConFiltros(ocultarGraficos = true) {
+    this.cargandoFiltro.set(true);
+    if (ocultarGraficos) {
+      const contenedor = document.getElementById('graficos-container');
+      if (contenedor) contenedor.style.display = 'none';
+    }
     this.cargandoFiltro.set(true);
     const contenedor = document.getElementById('graficos-container');
     if (contenedor) contenedor.style.display = 'none';
@@ -210,7 +215,10 @@ export class Dashboard implements OnInit, OnDestroy {
           if (elements.length > 0) {
             const label = data.porEmpresa[elements[0].index].nombre_empresa;
             const codigo = this.mapaEmpresas.get(label);
-            if (codigo) this.onEmpresaChange(String(codigo));
+            if (codigo) {
+              this.filtroEmpresa.set(codigo);
+              this.buscarConFiltros(false); // ← no ocultar gráficos
+            }
           }
         },
         responsive: true,
@@ -253,7 +261,10 @@ export class Dashboard implements OnInit, OnDestroy {
           if (elements.length > 0) {
             const label = data.porEmpresa[elements[0].index].nombre_empresa;
             const codigo = this.mapaEmpresas.get(label);
-            if (codigo) this.onEmpresaChange(String(codigo));
+            if (codigo) {
+              this.filtroEmpresa.set(codigo);
+              this.buscarConFiltros(false); // ← no ocultar gráficos
+            }
           }
         },
         responsive: true,
