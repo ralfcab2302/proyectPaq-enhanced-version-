@@ -6,7 +6,7 @@ export const getAll = async (req, res) => {
   try {
     const { nro_salida, codigo_barras, desde, hasta, codigo_empresa } = req.query;
     const pagina = parseInt(req.query.pagina) || 1;
-    const limite = parseInt(req.query.limite) || 50;
+    const limite = parseInt(req.query.limite) || 20;
     const offset = (pagina - 1) * limite;
 
     const condiciones = [];
