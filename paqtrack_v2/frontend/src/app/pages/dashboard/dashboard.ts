@@ -51,6 +51,9 @@ export class Dashboard implements OnInit, OnDestroy {
 
   protected paginaActual = signal(1);
   protected totalPaginas = signal(1);
+
+  private mapaEmpresas: Map<string, number> = new Map();
+
   private readonly COLORES = [
     '#3b82f6',
     '#8b5cf6',
@@ -203,6 +206,13 @@ export class Dashboard implements OnInit, OnDestroy {
         ],
       },
       options: {
+        onClick: (event: any, elements: any[]) => {
+          if (elements.length > 0) {
+            const label = data.porEmpresa[elements[0].index].nombre_empresa;
+            const codigo = this.mapaEmpresas.get(label);
+            if (codigo) this.onEmpresaChange(String(codigo));
+          }
+        },
         responsive: true,
         cutout: '65%',
         plugins: {
@@ -239,6 +249,13 @@ export class Dashboard implements OnInit, OnDestroy {
         ],
       },
       options: {
+        onClick: (event: any, elements: any[]) => {
+          if (elements.length > 0) {
+            const label = data.porEmpresa[elements[0].index].nombre_empresa;
+            const codigo = this.mapaEmpresas.get(label);
+            if (codigo) this.onEmpresaChange(String(codigo));
+          }
+        },
         responsive: true,
         plugins: {
           legend: { display: false },
@@ -286,6 +303,7 @@ export class Dashboard implements OnInit, OnDestroy {
     this.empresas.getAll().subscribe({
       next: (data) => {
         this.empresasSelect = data.empresas;
+        data.empresas.forEach((e) => this.mapaEmpresas.set(e.nombre, e.codigo));
       },
     });
   }
