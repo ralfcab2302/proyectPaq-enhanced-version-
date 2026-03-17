@@ -84,8 +84,8 @@ export async function datosSeeder() {
     await pool.query("INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)", [id, `usuario1@${slug}.com`, hashUsuario, "usuario"]);
     await pool.query("INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)", [id, `usuario2@${slug}.com`, hashUsuario, "usuario"]);
 
-    await insertarSalidas(id, 40);        // 40 aleatorias últimos 30 días
-    await insertarSalidas(id, 10, true);  // 10 de hoy
+    await insertarSalidas(id, 20);        // 40 aleatorias últimos 30 días
+    await insertarSalidas(id, 5, true);  // 10 de hoy
 
     console.log(`✅ ${empresa.nombre}`);
   }
