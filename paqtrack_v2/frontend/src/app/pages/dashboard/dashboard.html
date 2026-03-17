@@ -117,7 +117,7 @@
         </div>
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Empresa</label>
-          <select (change)="filtroEmpresa.set(+$any($event.target).value || null); buscarConFiltros()"
+          <select (change)="onEmpresaChange($any($event.target).value)"
             class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500">
             <option value="">Todas</option>
             @for (e of empresasSelect; track e.codigo) {

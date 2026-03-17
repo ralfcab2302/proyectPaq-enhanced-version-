@@ -68,6 +68,10 @@ export class Dashboard implements OnInit, OnDestroy {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+  protected onEmpresaChange(valor: string) {
+    this.filtroEmpresa.set(+valor || null);
+    this.buscarConFiltros();
+  }
 
   ngOnInit(): void {
     this.cargarSelectEmpresas();
@@ -107,25 +111,25 @@ export class Dashboard implements OnInit, OnDestroy {
 
   // ── Filtros tabla ────────────────────────────────────────────────
 
- protected buscarConFiltros() {
-  this.cargandoFiltro.set(true);
-  const contenedor = document.getElementById('graficos-container');
-  if (contenedor) contenedor.style.display = 'none';
+  protected buscarConFiltros() {
+    this.cargandoFiltro.set(true);
+    const contenedor = document.getElementById('graficos-container');
+    if (contenedor) contenedor.style.display = 'none';
 
-  const params: any = {};
-  if (this.filtroDesde()) params.desde = this.filtroDesde() + ' 00:00:00';
-  if (this.filtroHasta()) params.hasta = this.filtroHasta() + ' 23:59:59';
-  if (this.filtroNroSalida()) params.nro_salida = Number(this.filtroNroSalida());
-  if (this.filtroEmpresa()) params.codigo_empresa = this.filtroEmpresa();
+    const params: any = {};
+    if (this.filtroDesde()) params.desde = this.filtroDesde() + ' 00:00:00';
+    if (this.filtroHasta()) params.hasta = this.filtroHasta() + ' 23:59:59';
+    if (this.filtroNroSalida()) params.nro_salida = Number(this.filtroNroSalida());
+    if (this.filtroEmpresa()) params.codigo_empresa = this.filtroEmpresa();
 
-  this.salidas.getAll(params).subscribe({
-    next: (data) => {
-      this.aregloSalida.set(data.salidas);
-      this.cargandoFiltro.set(false);
-    },
-    error: () => this.cargandoFiltro.set(false),
-  });
-}
+    this.salidas.getAll(params).subscribe({
+      next: (data) => {
+        this.aregloSalida.set(data.salidas);
+        this.cargandoFiltro.set(false);
+      },
+      error: () => this.cargandoFiltro.set(false),
+    });
+  }
 
   protected limpiarFiltros() {
     this.filtroDesde.set('');
