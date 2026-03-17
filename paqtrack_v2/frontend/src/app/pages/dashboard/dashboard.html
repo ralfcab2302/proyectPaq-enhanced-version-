@@ -171,6 +171,19 @@
             }
           </tbody>
         </table>
+        <div class="flex items-center justify-between mt-4">
+          <span class="text-slate-500 text-xs">Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
+          <div class="flex gap-2">
+            <button (click)="irAPagina(paginaActual() - 1)" [disabled]="paginaActual() === 1"
+              class="text-sm bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-300 px-3 py-1.5 rounded-lg">
+              Anterior
+            </button>
+            <button (click)="irAPagina(paginaActual() + 1)" [disabled]="paginaActual() === totalPaginas()"
+              class="text-sm bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-300 px-3 py-1.5 rounded-lg">
+              Siguiente
+            </button>
+          </div>
+        </div>
       </div>
       } @else {
       <div class="text-center py-12 text-slate-600">

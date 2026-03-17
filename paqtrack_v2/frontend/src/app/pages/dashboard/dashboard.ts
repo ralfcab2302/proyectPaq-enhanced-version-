@@ -49,6 +49,8 @@ export class Dashboard implements OnInit, OnDestroy {
   private chartLine: any = null;
   private chartColumn: any = null;
 
+  protected paginaActual = signal(1);
+  protected totalPaginas = signal(1);
   private readonly COLORES = [
     '#3b82f6',
     '#8b5cf6',
@@ -72,6 +74,10 @@ export class Dashboard implements OnInit, OnDestroy {
     console.log('valor empresa:', valor);
     this.filtroEmpresa.set(+valor || null);
     console.log('filtroEmpresa signal:', this.filtroEmpresa());
+    this.buscarConFiltros();
+  }
+  protected irAPagina(pagina: number) {
+    this.paginaActual.set(pagina);
     this.buscarConFiltros();
   }
 
@@ -123,13 +129,14 @@ export class Dashboard implements OnInit, OnDestroy {
     if (this.filtroHasta()) params.hasta = this.filtroHasta() + ' 23:59:59';
     if (this.filtroNroSalida()) params.nro_salida = Number(this.filtroNroSalida());
     if (this.filtroEmpresa()) params.codigo_empresa = this.filtroEmpresa();
+    params.pagina = this.paginaActual();
 
     this.salidas.getAll(params).subscribe({
       next: (data) => {
         this.aregloSalida.set(data.salidas);
+        this.totalPaginas.set(data.paginas); // ← guardar total páginas
         this.cargandoFiltro.set(false);
       },
-      error: () => this.cargandoFiltro.set(false),
     });
     console.log('params enviados:', params);
   }
@@ -139,6 +146,7 @@ export class Dashboard implements OnInit, OnDestroy {
     this.filtroHasta.set('');
     this.filtroNroSalida.set('');
     this.filtroEmpresa.set(null);
+    this.paginaActual.set(1);
 
     // Mostrar gráficos al limpiar
     const contenedor = document.getElementById('graficos-container');
