@@ -144,7 +144,7 @@
             (change)="filtroNroSalida.set($any($event.target).value); buscarConFiltros()"
             class="w-full bg-slate-700/60 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-600" />
         </div>
-        <div>
+        @if (rolUser === 'superadmin') { <div>
           <label class="text-xs text-slate-400 mb-1 block">Empresa</label>
           <select (change)="onEmpresaChange($any($event.target).value)"
             class="w-full bg-slate-700/60 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors">
@@ -153,7 +153,7 @@
             <option [value]="e.codigo" [selected]="filtroEmpresa() === e.codigo">{{ e.nombre }}</option>
             }
           </select>
-        </div>
+        </div>}
       </div>
 
       <!-- Botones filtro -->
