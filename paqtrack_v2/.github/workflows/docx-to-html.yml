@@ -2,8 +2,8 @@ name: Convert DOCX to HTML
 
 on:
   push:
-    paths:
-      - '**.docx'
+    branches:
+      - main
 
 jobs:
   convert:
@@ -29,6 +29,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add *.html
-          git diff --cached --quiet || git commit -m "Auto convert docx to html"
+          git add **/*.html
+          git diff --cached --quiet || git commit -m "docs: auto-convert DOCX to HTML"
           git push
