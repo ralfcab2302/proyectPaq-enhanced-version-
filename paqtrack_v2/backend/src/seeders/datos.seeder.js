@@ -42,15 +42,15 @@ const codigoBarrasAleatorio = () => {
 
 const fechaAleatoria = (soloHoy = false) => {
   const ahora = new Date();
-  const fecha = new Date(
-    ahora.getFullYear(),
-    ahora.getMonth(),
-    soloHoy ? ahora.getDate() : ahora.getDate() - Math.floor(Math.random() * 30),
+  const diasAtras = soloHoy ? 0 : Math.floor(Math.random() * 30);
+  return new Date(Date.UTC(
+    ahora.getUTCFullYear(),
+    ahora.getUTCMonth(),
+    ahora.getUTCDate() - diasAtras,
     Math.floor(Math.random() * 24),
     Math.floor(Math.random() * 60),
     0
-  );
-  return fecha;
+  ));
 };
 
 const insertarSalidas = async (codigoEmpresa, cantidad, soloHoy = false) => {
@@ -84,11 +84,11 @@ export async function datosSeeder() {
     await pool.query("INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)", [id, `usuario1@${slug}.com`, hashUsuario, "usuario"]);
     await pool.query("INSERT INTO usuarios (codigo_empresa, correo, contrasena, rol) VALUES (?, ?, ?, ?)", [id, `usuario2@${slug}.com`, hashUsuario, "usuario"]);
 
-    await insertarSalidas(id, 20);        // 40 aleatorias últimos 30 días
-    await insertarSalidas(id, 5, true);  // 10 de hoy
+    await insertarSalidas(id, 20);       // 20 aleatorias últimos 30 días
+    await insertarSalidas(id, 5, true); // 5 de hoy en UTC
 
     console.log(`✅ ${empresa.nombre}`);
   }
 
-  console.log("✅ Seeder completado — 25 empresas, 50 salidas cada una (10 de hoy)");
+  console.log("✅ Seeder completado — 25 empresas, 25 salidas cada una (5 de hoy)");
 }
