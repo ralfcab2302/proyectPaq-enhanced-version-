@@ -50,8 +50,9 @@ async function esperarMySQL(intentos = 15) {
       console.log("✅ MySQL listo");
       await new Promise(r => setTimeout(r, 6000));
       return;
-    } catch {
+    } catch (err) {
       console.log(`⏳ Esperando MySQL... intento ${i}/${intentos}`);
+      console.error(`   Error: ${err.message}`); // ← añade esto
       await new Promise(r => setTimeout(r, 3000));
     }
   }
