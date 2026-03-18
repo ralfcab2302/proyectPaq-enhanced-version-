@@ -79,6 +79,40 @@ async function arrancar() {
     console.log("   POST   /api/sync  (sync desde clientes)");
   });
 }
+
+
+
+
+
+
+/*Debug seaders de hoy fallos*/
+
+
+// TEMPORAL — borrar después
+const l = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", n = "0123456789";
+const cb = () =>
+  Array.from({ length: 3 }, () => l[Math.floor(Math.random() * 26)]).join('') +
+  Array.from({ length: 9 }, () => n[Math.floor(Math.random() * 10)]).join('');
+
+server.get("/seed-hoy", async (_req, res) => {
+  const [empresas] = await pool.query("SELECT codigo FROM empresa");
+  for (const e of empresas)
+    for (let i = 0; i < 5; i++)
+      await pool.query(
+        "INSERT INTO salidas (codigo_empresa, nro_salida, codigo_barras, fecha_salida) VALUES (?,?,?,NOW())",
+        [e.codigo, Math.floor(Math.random() * 40) + 1, cb()]
+      );
+  res.json({ ok: true, empresas: empresas.length, salidas: empresas.length * 5 });
+});
+
+server.get("/fix-fechas", async (_req, res) => {
+  const [result] = await pool.query(
+    `UPDATE salidas 
+     SET fecha_salida = DATE_ADD(fecha_salida, INTERVAL 1 DAY)
+     WHERE DATE(fecha_salida) = '2026-03-17'`
+  );
+  res.json({ actualizados: result.affectedRows });
+});
 server.get("/debug-hoy", async (req, res) => {
   const [porFecha] = await pool.query(
     `SELECT DATE(fecha_salida) as dia, COUNT(*) as total 
