@@ -1,4 +1,4 @@
-name: Convert DOCX to HTML
+name: Convert DOCX to PDF
 
 on:
   push:
@@ -16,19 +16,27 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install Pandoc
-        run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Install Pandoc and LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-lang-spanish
 
-      - name: Convert DOCX to HTML
+      - name: Convert DOCX to PDF
         run: |
           for file in $(find . -name "*.docx"); do
-            pandoc "$file" -o "${file%.docx}.html" --standalone
+            filename=$(basename "$file" .docx)
+            echo "Converting $file..."
+            pandoc "$file" -o "${file%.docx}.pdf" \
+              --pdf-engine=xelatex \
+              --metadata title="$filename" \
+              -V geometry:margin=2cm \
+              -V lang=es || echo "Skipping $file (error)"
           done
 
-      - name: Commit HTML files
+      - name: Commit PDF files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add **/*.html
-          git diff --cached --quiet || git commit -m "docs: auto-convert DOCX to HTML"
+          git add **/*.pdf
+          git diff --cached --quiet || git commit -m "docs: auto-convert DOCX to PDF"
           git push
