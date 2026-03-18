@@ -15,11 +15,14 @@ import { EmpresaService } from '../../services/empresa';
 })
 export class Dashboard implements OnInit, OnDestroy {
   protected rolUser = localStorage.getItem('usuario')
-    ? JSON.parse(localStorage.getItem('usuario')!).rol : null;
+    ? JSON.parse(localStorage.getItem('usuario')!).rol
+    : null;
   protected nombreUser = localStorage.getItem('usuario')
-    ? JSON.parse(localStorage.getItem('usuario')!).nombre : null;
+    ? JSON.parse(localStorage.getItem('usuario')!).nombre
+    : null;
   protected correoUser = localStorage.getItem('usuario')
-    ? JSON.parse(localStorage.getItem('usuario')!).correo : null;
+    ? JSON.parse(localStorage.getItem('usuario')!).correo
+    : null;
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -53,11 +56,32 @@ export class Dashboard implements OnInit, OnDestroy {
   private chartColumn: any = null;
 
   private readonly COLORES = [
-    '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
-    '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7',
-    '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
-    '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7',
-    '#3b82f6', '#8b5cf6',
+    '#3b82f6',
+    '#8b5cf6',
+    '#10b981',
+    '#f59e0b',
+    '#ef4444',
+    '#06b6d4',
+    '#ec4899',
+    '#14b8a6',
+    '#f97316',
+    '#6366f1',
+    '#84cc16',
+    '#a855f7',
+    '#3b82f6',
+    '#8b5cf6',
+    '#10b981',
+    '#f59e0b',
+    '#ef4444',
+    '#06b6d4',
+    '#ec4899',
+    '#14b8a6',
+    '#f97316',
+    '#6366f1',
+    '#84cc16',
+    '#a855f7',
+    '#3b82f6',
+    '#8b5cf6',
   ];
 
   // Construye fecha local sin desfase UTC
@@ -112,7 +136,10 @@ export class Dashboard implements OnInit, OnDestroy {
           setTimeout(() => this.cargarGraficos(inicioHoy, finHoy), 100);
         }
       },
-      error: (err) => { console.error(err); this.cargando.set(false); },
+      error: (err) => {
+        console.error(err);
+        this.cargando.set(false);
+      },
     });
   }
 
@@ -155,7 +182,10 @@ export class Dashboard implements OnInit, OnDestroy {
 
   private cargarGraficos(inicioHoy: string, finHoy: string) {
     this.salidas.estadisticas().subscribe({
-      next: (data) => { this.renderDonut(data); this.renderLinea(data); },
+      next: (data) => {
+        this.renderDonut(data);
+        this.renderLinea(data);
+      },
     });
     this.salidas.estadisticas({ desde: inicioHoy, hasta: finHoy }).subscribe({
       next: (data) => {
@@ -189,12 +219,14 @@ export class Dashboard implements OnInit, OnDestroy {
       type: 'doughnut',
       data: {
         labels: data.porEmpresa.map((e) => e.nombre_empresa || 'Sin nombre'),
-        datasets: [{
-          data: data.porEmpresa.map((e) => Number(e.total)),
-          backgroundColor: this.COLORES,
-          borderWidth: 0,
-          hoverOffset: 8,
-        }],
+        datasets: [
+          {
+            data: data.porEmpresa.map((e) => Number(e.total)),
+            backgroundColor: this.COLORES,
+            borderWidth: 0,
+            hoverOffset: 8,
+          },
+        ],
       },
       options: {
         onClick: (_event: any, elements: any[]) => {
@@ -214,8 +246,8 @@ export class Dashboard implements OnInit, OnDestroy {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: (ctx: any) => ` ${ctx.label}: ${ctx.parsed} paquetes`
-            }
+              label: (ctx: any) => ` ${ctx.label}: ${ctx.parsed} paquetes`,
+            },
           },
         },
       },
@@ -228,19 +260,21 @@ export class Dashboard implements OnInit, OnDestroy {
       type: 'line',
       data: {
         labels: data.porDia.map((d) =>
-          new Date(d.dia).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+          new Date(d.dia).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
         ),
-        datasets: [{
-          label: 'Salidas',
-          data: data.porDia.map((d) => Number(d.total)),
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59,130,246,0.1)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointBackgroundColor: '#3b82f6',
-          fill: true,
-          tension: 0.4,
-        }],
+        datasets: [
+          {
+            label: 'Salidas',
+            data: data.porDia.map((d) => Number(d.total)),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: '#3b82f6',
+            fill: true,
+            tension: 0.4,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -263,13 +297,15 @@ export class Dashboard implements OnInit, OnDestroy {
       type: 'bar',
       data: {
         labels: data.porEmpresa.map((e) => e.nombre_empresa || 'Sin nombre'),
-        datasets: [{
-          label: 'Salidas hoy',
-          data: data.porEmpresa.map((e) => Number(e.total)),
-          backgroundColor: this.COLORES,
-          borderRadius: 6,
-          borderWidth: 0,
-        }],
+        datasets: [
+          {
+            label: 'Salidas hoy',
+            data: data.porEmpresa.map((e) => Number(e.total)),
+            backgroundColor: this.COLORES,
+            borderRadius: 6,
+            borderWidth: 0,
+          },
+        ],
       },
       options: {
         onClick: (_event: any, elements: any[]) => {
