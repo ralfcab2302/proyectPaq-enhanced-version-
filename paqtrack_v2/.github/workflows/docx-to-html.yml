@@ -9,6 +9,9 @@ jobs:
   convert:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -19,13 +22,13 @@ jobs:
       - name: Convert DOCX to HTML
         run: |
           for file in $(find . -name "*.docx"); do
-            pandoc "$file" -o "${file%.docx}.html"
+            pandoc "$file" -o "${file%.docx}.html" --standalone
           done
 
       - name: Commit HTML files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "Auto convert docx to html" || echo "No changes"
+          git add *.html
+          git diff --cached --quiet || git commit -m "Auto convert docx to html"
           git push
