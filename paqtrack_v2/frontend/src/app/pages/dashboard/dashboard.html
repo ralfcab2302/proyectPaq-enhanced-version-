@@ -1,89 +1,112 @@
 <div class="min-h-screen bg-slate-900">
   <app-nabvar></app-nabvar>
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-4">
+
     <!-- Bienvenida -->
-    <div class="mb-8">
+    <div>
       <h1 class="text-2xl font-bold text-white">
         Bienvenido, <span class="text-blue-400">{{ correoUser?.split('@')[0] }}</span>
       </h1>
-      <p class="text-slate-500 mt-1 text-sm">Panel de control de PaqTracer</p>
+      <p class="text-slate-500 mt-1 text-sm">Panel de control · PaqTracer</p>
     </div>
-    <!-- Fila 1: Cards compactas -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+
+    <!-- Cards de métricas -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div
-        class="bg-slate-800 border border-slate-700 rounded-2xl p-5 hover:border-blue-500 transition-colors duration-200 flex items-center gap-4">
+        class="bg-slate-800 border border-slate-700 hover:border-blue-500/50 rounded-2xl p-5 flex items-center gap-4 transition-colors duration-200">
         <div class="p-3 bg-blue-500/10 rounded-xl shrink-0">
-          <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
           </svg>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-slate-400 text-xs">Total paquetes</p>
-          <h3 class="text-2xl font-bold text-white mt-0.5">{{ totalSalidas() }}</h3>
+          <p class="text-2xl font-bold text-white mt-0.5">{{ totalSalidas() }}</p>
         </div>
-        <span class="ml-auto text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full self-start">+12%</span>
+        <span class="ml-auto text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full shrink-0">+12%</span>
       </div>
+
       <div
-        class="bg-slate-800 border border-slate-700 rounded-2xl p-5 hover:border-blue-500 transition-colors duration-200 flex items-center gap-4">
+        class="bg-slate-800 border border-slate-700 hover:border-purple-500/50 rounded-2xl p-5 flex items-center gap-4 transition-colors duration-200">
         <div class="p-3 bg-purple-500/10 rounded-xl shrink-0">
-          <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-slate-400 text-xs">Paquetes hoy</p>
-          <h3 class="text-2xl font-bold text-white mt-0.5">{{ totalHoy() }}</h3>
+          <p class="text-2xl font-bold text-white mt-0.5">{{ totalHoy() }}</p>
         </div>
-        <span class="ml-auto text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded-full self-start">hoy</span>
+        <span class="ml-auto text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded-full shrink-0">hoy</span>
       </div>
+
       @if (rolUser === 'superadmin') {
       <div
-        class="bg-slate-800 border border-slate-700 rounded-2xl p-5 hover:border-blue-500 transition-colors duration-200 flex items-center gap-4">
+        class="bg-slate-800 border border-slate-700 hover:border-green-500/50 rounded-2xl p-5 flex items-center gap-4 transition-colors duration-200">
         <div class="p-3 bg-green-500/10 rounded-xl shrink-0">
-          <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
         </div>
-        <div>
+        <div class="min-w-0">
           <p class="text-slate-400 text-xs">Empresas registradas</p>
-          <h3 class="text-2xl font-bold text-white mt-0.5">{{ totalEmpresas() }}</h3>
+          <p class="text-2xl font-bold text-white mt-0.5">{{ totalEmpresas() }}</p>
         </div>
-        <span class="ml-auto text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full self-start">activo</span>
+        <span class="ml-auto text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full shrink-0">activo</span>
       </div>
       }
     </div>
 
-    <!-- Fila 2: Gráficos (solo superadmin) -->
-    <div id="graficos-container">
-      @if (rolUser === 'superadmin') {
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+    <!-- Gráficos (solo superadmin) -->
+    @if (rolUser === 'superadmin') {
+    <div id="graficos-container" class="space-y-4">
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Donut -->
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
-          <h2 class="text-white font-semibold mb-1">Paquetes por empresa</h2>
-          <p class="text-slate-500 text-xs mb-4">Distribución total acumulada</p>
-          <div style="height: 220px; position: relative; overflow: hidden;">
+          <p class="text-white font-semibold text-sm">Paquetes por empresa</p>
+          <p class="text-slate-500 text-xs mt-0.5 mb-4">Haz clic en un sector para filtrar</p>
+          <!-- Canvas grande sin leyenda interna -->
+          <div class="relative h-64">
             <canvas id="chart-donut"></canvas>
           </div>
+          <!-- Leyenda externa scrolleable -->
+          <!-- Leyenda externa sin scroll -->
+          <div class="mt-4 flex flex-wrap gap-x-4 gap-y-1.5">
+            @for (e of empresasDonut; track e.codigo) {
+            <button (click)="filtroEmpresa.set(e.codigo); buscarConFiltros(false)"
+              class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+              <span class="w-2 h-2 rounded-full shrink-0" [style.background]="e.color"></span>
+              {{ e.nombre }}
+            </button>
+            }
+          </div>
         </div>
+
+        <!-- Línea -->
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
-          <h2 class="text-white font-semibold mb-1">Salidas totales por fecha</h2>
-          <p class="text-slate-500 text-xs mb-4">Últimos 30 días</p>
-          <div style="height: 220px; position: relative; overflow: hidden;">
+          <p class="text-white font-semibold text-sm">Salidas totales por fecha</p>
+          <p class="text-slate-500 text-xs mt-0.5 mb-4">Últimos 30 días</p>
+          <div class="relative h-64">
             <canvas id="chart-line"></canvas>
           </div>
         </div>
       </div>
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 mb-4">
-        <h2 class="text-white font-semibold mb-1">Salidas por empresa — hoy</h2>
-        <p class="text-slate-500 text-xs mb-4">Comparativa de actividad del día</p>
+
+      <!-- Barras -->
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+        <p class="text-white font-semibold text-sm">Salidas por empresa — hoy</p>
+        <p class="text-slate-500 text-xs mt-0.5 mb-4">Comparativa de actividad del día</p>
         @if (hayDayos()) {
-        <div style="height: 180px; position: relative; overflow: hidden;">
+        <div class="relative h-44">
           <canvas id="chart-column"></canvas>
         </div>
         } @else {
-        <div class="flex flex-col items-center justify-center py-12 text-slate-600">
-          <svg class="w-10 h-10 mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex flex-col items-center justify-center py-10 text-slate-600">
+          <svg class="w-9 h-9 mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
               d="M9 17v-2m3 2v-4m3 4v-6M3 21h18M3 10l9-7 9 7" />
           </svg>
@@ -91,39 +114,43 @@
         </div>
         }
       </div>
-      }
-    </div>
 
-    <!-- Tabla de últimas salidas -->
+    </div>
+    }
+
+    <!-- Tabla -->
     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-white font-semibold">Últimas salidas</h2>
-        <span class="text-xs text-slate-500">Total: {{ totalSalidas() }}</span>
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <p class="text-white font-semibold text-sm">Últimas salidas</p>
+          <p class="text-slate-500 text-xs mt-0.5">{{ totalSalidas() }} registros totales</p>
+        </div>
       </div>
+
       <!-- Filtros -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Desde</label>
           <input type="date" [value]="filtroDesde()"
             (change)="filtroDesde.set($any($event.target).value); buscarConFiltros()"
-            class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+            class="w-full bg-slate-700/60 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors" />
         </div>
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Hasta</label>
           <input type="date" [value]="filtroHasta()"
             (change)="filtroHasta.set($any($event.target).value); buscarConFiltros()"
-            class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500" />
+            class="w-full bg-slate-700/60 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors" />
         </div>
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Nº salida</label>
-          <input type="number" min="1" max="40" placeholder="1 - 40" [value]="filtroNroSalida()"
+          <input type="number" min="1" max="40" placeholder="1 – 40" [value]="filtroNroSalida()"
             (change)="filtroNroSalida.set($any($event.target).value); buscarConFiltros()"
-            class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 placeholder:text-slate-500" />
+            class="w-full bg-slate-700/60 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-600" />
         </div>
         <div>
           <label class="text-xs text-slate-400 mb-1 block">Empresa</label>
           <select (change)="onEmpresaChange($any($event.target).value)"
-            class="w-full bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500">
+            class="w-full bg-slate-700/60 border border-slate-600 text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 transition-colors">
             <option value="">Todas</option>
             @for (e of empresasSelect; track e.codigo) {
             <option [value]="e.codigo" [selected]="filtroEmpresa() === e.codigo">{{ e.nombre }}</option>
@@ -131,14 +158,15 @@
           </select>
         </div>
       </div>
-      <!-- Botones -->
-      <div class="flex gap-3 mb-6">
+
+      <!-- Botones filtro -->
+      <div class="flex gap-2 mb-5">
         <button (click)="buscarConFiltros()"
-          class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+          class="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg transition-colors">
           @if (cargandoFiltro()) {
-          <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          <span class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
           } @else {
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -146,59 +174,71 @@
           Buscar
         </button>
         <button (click)="limpiarFiltros()"
-          class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm px-4 py-2 rounded-lg transition-colors">
+          class="bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-slate-300 text-sm px-4 py-2 rounded-lg transition-colors">
           Limpiar
         </button>
       </div>
+
       <!-- Tabla -->
       @if (aregloSalida().length > 0) {
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto rounded-xl border border-slate-700">
         <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b border-slate-700">
+          <thead class="bg-slate-700/50">
+            <tr>
               <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Código</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Código barras
+              <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Cód. barras
               </th>
               <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Salida</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Empresa</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wide">Fecha</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="divide-y divide-slate-700/50">
             @for (salida of aregloSalida(); track salida.codigo) {
-            <tr class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors">
+            <tr class="hover:bg-slate-700/30 transition-colors">
               <td class="px-4 py-3 text-slate-300">{{ salida.codigo }}</td>
-              <td class="px-4 py-3 text-slate-300 font-mono">{{ salida.codigo_barras }}</td>
-              <td class="px-4 py-3 text-slate-300">{{ salida.nro_salida }}</td>
+              <td class="px-4 py-3 text-slate-300 font-mono text-xs">{{ salida.codigo_barras }}</td>
+              <td class="px-4 py-3">
+                <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full">{{ salida.nro_salida
+                  }}</span>
+              </td>
               <td class="px-4 py-3 text-slate-300">{{ salida.nombre_empresa }}</td>
-              <td class="px-4 py-3 text-slate-400">{{ salida.fecha_salida | date:'dd/MM/yyyy' }}</td>
+              <td class="px-4 py-3 text-slate-500 text-xs">{{ salida.fecha_salida | date:'dd/MM/yyyy' }}</td>
             </tr>
             }
           </tbody>
         </table>
-        <div class="flex items-center justify-between mt-4">
-          <span class="text-slate-500 text-xs">Página {{ paginaActual() }} de {{ totalPaginas() }}</span>
-          <div class="flex gap-2">
-            <button (click)="irAPagina(paginaActual() - 1)" [disabled]="paginaActual() === 1"
-              class="text-sm bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-300 px-3 py-1.5 rounded-lg">
-              Anterior
-            </button>
-            <button (click)="irAPagina(paginaActual() + 1)" [disabled]="paginaActual() === totalPaginas()"
-              class="text-sm bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-300 px-3 py-1.5 rounded-lg">
-              Siguiente
-            </button>
-          </div>
+      </div>
+
+      <!-- Paginación -->
+      <div class="flex items-center justify-between mt-4">
+        <p class="text-slate-500 text-xs">Página <span class="text-slate-300">{{ paginaActual() }}</span> de <span
+            class="text-slate-300">{{ totalPaginas() }}</span></p>
+        <div class="flex gap-2">
+          <button (click)="irAPagina(paginaActual() - 1)" [disabled]="paginaActual() === 1"
+            class="text-xs bg-slate-700 hover:bg-slate-600 disabled:opacity-30 disabled:cursor-not-allowed text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
+            ← Anterior
+          </button>
+          <button (click)="irAPagina(paginaActual() + 1)" [disabled]="paginaActual() === totalPaginas()"
+            class="text-xs bg-slate-700 hover:bg-slate-600 disabled:opacity-30 disabled:cursor-not-allowed text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
+            Siguiente →
+          </button>
         </div>
       </div>
+
       } @else {
-      <div class="text-center py-12 text-slate-600">
-        <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex flex-col items-center justify-center py-16 text-slate-600">
+        <svg class="w-10 h-10 mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
         </svg>
         <p class="text-sm">No se encontraron resultados</p>
+        <button (click)="limpiarFiltros()" class="mt-3 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+          Limpiar filtros
+        </button>
       </div>
       }
     </div>
+
   </main>
 </div>

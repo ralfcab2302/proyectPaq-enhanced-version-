@@ -44,6 +44,9 @@ export class Dashboard implements OnInit, OnDestroy {
   protected paginaActual = signal(1);
   protected totalPaginas = signal(1);
 
+  // ← nuevo: leyenda externa del donut
+  protected empresasDonut: { nombre: string; codigo: number; color: string }[] = [];
+
   private mapaEmpresas: Map<string, number> = new Map();
 
   private chartDonut: any = null;
@@ -53,6 +56,9 @@ export class Dashboard implements OnInit, OnDestroy {
   private readonly COLORES = [
     '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
     '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7',
+    '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4',
+    '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7',
+    '#3b82f6', '#8b5cf6',
   ];
 
   cerrarSesion() {
@@ -162,6 +168,14 @@ export class Dashboard implements OnInit, OnDestroy {
 
   private renderDonut(data: EstadisticasResponse) {
     if (!data.porEmpresa?.length) return;
+
+    // Construir leyenda externa
+    this.empresasDonut = data.porEmpresa.map((e, i) => ({
+      nombre: e.nombre_empresa || 'Sin nombre',
+      codigo: this.mapaEmpresas.get(e.nombre_empresa) ?? 0,
+      color: this.COLORES[i % this.COLORES.length],
+    }));
+
     this.chartDonut = this.renderChart('chart-donut', this.chartDonut, {
       type: 'doughnut',
       data: {
@@ -170,7 +184,7 @@ export class Dashboard implements OnInit, OnDestroy {
           data: data.porEmpresa.map((e) => Number(e.total)),
           backgroundColor: this.COLORES,
           borderWidth: 0,
-          hoverOffset: 6,
+          hoverOffset: 8,
         }],
       },
       options: {
@@ -186,10 +200,14 @@ export class Dashboard implements OnInit, OnDestroy {
         },
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '65%',
+        cutout: '60%',
         plugins: {
-          legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 16, font: { size: 12 } } },
-          tooltip: { callbacks: { label: (ctx: any) => ` ${ctx.label}: ${ctx.parsed}` } },
+          legend: { display: false }, // ← sin leyenda interna
+          tooltip: {
+            callbacks: {
+              label: (ctx: any) => ` ${ctx.label}: ${ctx.parsed} paquetes`
+            }
+          },
         },
       },
     });
