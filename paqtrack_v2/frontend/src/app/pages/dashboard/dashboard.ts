@@ -249,6 +249,7 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   private renderColumnas(data: EstadisticasResponse) {
+    console.log(data);
     if (!data.porEmpresa?.length) return;
     this.chartColumn = this.renderChart('chart-column', this.chartColumn, {
       type: 'bar',
