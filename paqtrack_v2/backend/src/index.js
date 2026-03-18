@@ -80,18 +80,14 @@ async function arrancar() {
   });
 }
 server.get("/debug-hoy", async (req, res) => {
-  const [resultado] = await pool.query(
-    `SELECT e.nombre AS nombre_empresa, COUNT(*) AS total
-     FROM salidas s
-     LEFT JOIN empresa e ON e.codigo = s.codigo_empresa
-     WHERE DATE(s.fecha_salida) = CURDATE()
-     GROUP BY s.codigo_empresa
-     ORDER BY total DESC`,
+  const [porFecha] = await pool.query(
+    `SELECT DATE(fecha_salida) as dia, COUNT(*) as total 
+     FROM salidas 
+     GROUP BY DATE(fecha_salida) 
+     ORDER BY dia DESC 
+     LIMIT 10`
   );
-  
-  const [curdate] = await pool.query("SELECT CURDATE() as hoy, NOW() as ahora");
-  
-  res.json({ curdate: curdate[0], resultado });
+  res.json({ porFecha });
 });
 
 arrancar();
