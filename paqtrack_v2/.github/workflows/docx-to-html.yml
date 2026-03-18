@@ -1,0 +1,31 @@
+name: Convert DOCX to HTML
+
+on:
+  push:
+    paths:
+      - '**.docx'
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Convert DOCX to HTML
+        run: |
+          for file in $(find . -name "*.docx"); do
+            pandoc "$file" -o "${file%.docx}.html"
+          done
+
+      - name: Commit HTML files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Auto convert docx to html" || echo "No changes"
+          git push
