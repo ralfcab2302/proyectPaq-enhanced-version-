@@ -1,36 +1,69 @@
-<nav class="bg-slate-800 border-b border-slate-700 px-6 py-4 sticky top-0 z-10">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
+<nav class="bg-slate-800 border-b border-slate-700 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-10">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+
     <!-- Logo -->
-    <p class="text-lg font-semibold text-white">
-      <span class="text-blue-400">Rovimatica</span> PaqTracer
+    <p class="text-base sm:text-lg font-semibold text-white shrink-0">
+      <span class="text-blue-400">Rovimatica</span>
+      <span class="hidden sm:inline"> PaqTracer</span>
     </p>
-    <!-- Usuario + cerrar sesión -->
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2">
-        <!-- Punto de estado -->
-        <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-        <span class="text-slate-400 text-sm hidden sm:block">{{ correoUser }}</span>
+
+    <!-- Usuario + acciones -->
+    <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+
+      <!-- Estado + email + rol -->
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="w-2 h-2 bg-green-400 rounded-full shrink-0"></span>
+        <span class="text-slate-400 text-sm hidden sm:block truncate max-w-[180px]">{{ correoUser }}</span>
+        <span class="text-slate-600 hidden sm:block">|</span>
+        <!-- Badge de rol: visible siempre pero compacto en móvil -->
+        <span class="text-xs text-blue-400 font-medium uppercase tracking-wide bg-blue-400/10 px-1.5 py-0.5 rounded sm:bg-transparent sm:px-0 sm:py-0">
+          {{ rolUser }}
+        </span>
       </div>
-      <span class="text-slate-600 hidden sm:block">|</span>
-      <span class="text-xs text-blue-400 font-medium uppercase tracking-wide hidden sm:block">
-        {{ rolUser }}
-      </span>
+
+      <!-- Botón: Búsqueda de paquete -->
       @if ((rolUser === 'superadmin' || rolUser === 'admin') && rutaActual() !== '/busqueda') {
-      <button (click)="redirigirBuscar()" class=" text-sm bg-slate-700 hover:bg-green-600 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg
-          transition-all duration-200">
-        Busqueda de paquete
+      <button
+        (click)="redirigirBuscar()"
+        title="Búsqueda de paquete"
+        class="flex items-center gap-1.5 text-sm bg-slate-700 hover:bg-green-600 text-slate-300 hover:text-white
+               px-2 py-1.5 sm:px-3 rounded-lg transition-all duration-200 shrink-0">
+        <!-- Icono búsqueda -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+        </svg>
+        <span class="hidden sm:inline">Búsqueda</span>
       </button>
       }
-      @if (rutaActual()==="/busqueda" && rolUser!='usuario') {
-      <button (click)="redirigirDashboard()" class=" text-sm bg-slate-700 hover:bg-green-600 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg
-          transition-all duration-200">
-        Vuelta a Dashboard
+
+      <!-- Botón: Vuelta a Dashboard -->
+      @if (rutaActual() === '/busqueda' && rolUser !== 'usuario') {
+      <button
+        (click)="redirigirDashboard()"
+        title="Volver al Dashboard"
+        class="flex items-center gap-1.5 text-sm bg-slate-700 hover:bg-green-600 text-slate-300 hover:text-white
+               px-2 py-1.5 sm:px-3 rounded-lg transition-all duration-200 shrink-0">
+        <!-- Icono home -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m-4 0h4"/>
+        </svg>
+        <span class="hidden sm:inline">Dashboard</span>
       </button>
       }
-      <button (click)="cerrarSesion()" class=" text-sm bg-slate-700 hover:bg-red-600 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg
-          transition-all duration-200">
-        Salir
+
+      <!-- Botón: Salir -->
+      <button
+        (click)="cerrarSesion()"
+        title="Cerrar sesión"
+        class="flex items-center gap-1.5 text-sm bg-slate-700 hover:bg-red-600 text-slate-300 hover:text-white
+               px-2 py-1.5 sm:px-3 rounded-lg transition-all duration-200 shrink-0">
+        <!-- Icono logout -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span class="hidden sm:inline">Salir</span>
       </button>
+
     </div>
   </div>
 </nav>
