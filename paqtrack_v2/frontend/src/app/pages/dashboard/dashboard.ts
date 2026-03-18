@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
 import { Nabvar } from '../nabvar/nabvar';
 import { Salidas } from '../../services/salidas';
-import { Salida, EstadisticasResponse } from '../../models/models';
+import { Salida, EstadisticasResponse, Empresa } from '../../models/models';
 import { EmpresaService } from '../../services/empresa';
 
 @Component({
@@ -44,7 +44,6 @@ export class Dashboard implements OnInit, OnDestroy {
   protected paginaActual = signal(1);
   protected totalPaginas = signal(1);
 
-  // ← nuevo: leyenda externa del donut
   protected empresasDonut: { nombre: string; codigo: number; color: string }[] = [];
 
   private mapaEmpresas: Map<string, number> = new Map();
@@ -60,6 +59,14 @@ export class Dashboard implements OnInit, OnDestroy {
     '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#a855f7',
     '#3b82f6', '#8b5cf6',
   ];
+
+  // Construye fecha local sin desfase UTC
+  private fechaLocal(fecha: Date): string {
+    const y = fecha.getFullYear();
+    const m = String(fecha.getMonth() + 1).padStart(2, '0');
+    const d = String(fecha.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
 
   cerrarSesion() {
     this.authService.logout();
@@ -78,11 +85,14 @@ export class Dashboard implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.cargarSelectEmpresas();
+
     const hoy = new Date();
-    const inicioHoy = hoy.toISOString().slice(0, 10) + ' 00:00:00';
-    const finHoy = hoy.toISOString().slice(0, 10) + ' 23:59:59';
-    const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
-      .toISOString().slice(0, 10) + ' 00:00:00';
+    const fechaHoy = this.fechaLocal(hoy);
+    const inicioHoy = `${fechaHoy} 00:00:00`;
+    const finHoy = `${fechaHoy} 23:59:59`;
+
+    const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    const inicioMes = `${this.fechaLocal(primerDiaMes)} 00:00:00`;
 
     this.salidas.getAll({ desde: inicioHoy, hasta: finHoy }).subscribe({
       next: (data) => this.totalHoy.set(data.total),
@@ -169,7 +179,6 @@ export class Dashboard implements OnInit, OnDestroy {
   private renderDonut(data: EstadisticasResponse) {
     if (!data.porEmpresa?.length) return;
 
-    // Construir leyenda externa
     this.empresasDonut = data.porEmpresa.map((e, i) => ({
       nombre: e.nombre_empresa || 'Sin nombre',
       codigo: this.mapaEmpresas.get(e.nombre_empresa) ?? 0,
@@ -202,7 +211,7 @@ export class Dashboard implements OnInit, OnDestroy {
         maintainAspectRatio: false,
         cutout: '60%',
         plugins: {
-          legend: { display: false }, // ← sin leyenda interna
+          legend: { display: false },
           tooltip: {
             callbacks: {
               label: (ctx: any) => ` ${ctx.label}: ${ctx.parsed} paquetes`
@@ -249,7 +258,6 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   private renderColumnas(data: EstadisticasResponse) {
-    console.log(data);
     if (!data.porEmpresa?.length) return;
     this.chartColumn = this.renderChart('chart-column', this.chartColumn, {
       type: 'bar',
@@ -292,7 +300,7 @@ export class Dashboard implements OnInit, OnDestroy {
     this.empresas.getAll().subscribe({
       next: (data) => {
         this.empresasSelect = data.empresas;
-        data.empresas.forEach((e) => this.mapaEmpresas.set(e.nombre, e.codigo));
+        data.empresas.forEach((e: Empresa) => this.mapaEmpresas.set(e.nombre, e.codigo));
       },
     });
   }
