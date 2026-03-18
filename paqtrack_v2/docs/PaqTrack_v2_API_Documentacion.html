@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>PaqTrack_v2_API_Documentacion</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<p><strong>PaqTrack v2</strong></p>
+<p><strong>API REST</strong></p>
+<p><em>Documentación de Referencia</em></p>
+<p>Versión 2.0 • Marzo 2026</p>
+<p><strong>1. Información General</strong></p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 72%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>URL base</strong></td>
+<td>https://backendcentral-desarrollo.up.railway.app/api</td>
+</tr>
+<tr class="even">
+<td><strong>Formato</strong></td>
+<td>JSON (application/json)</td>
+</tr>
+<tr class="odd">
+<td><strong>Autenticación</strong></td>
+<td>Bearer Token (JWT) en cabecera Authorization</td>
+</tr>
+<tr class="even">
+<td><strong>Versión</strong></td>
+<td>v2.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2. Autenticación</strong></p>
+<p>La API utiliza JSON Web Tokens (JWT) para autenticar las peticiones.
+La mayoría de endpoints requieren un token válido en la cabecera HTTP
+Authorization.</p>
+<p><strong>2.1 Cabecera requerida</strong></p>
+<blockquote>
+<p>Authorization: Bearer &lt;token&gt;</p>
+</blockquote>
+<p><strong>2.2 Obtener un token — Login</strong></p>
+<p><strong>POST</strong> /api/auth/login</p>
+<blockquote>
+<p><em>Autentica al usuario y devuelve un token JWT.</em></p>
+<p><strong>Roles mínimos:</strong> Pública (sin autenticación)</p>
+</blockquote>
+<p><strong>Body (JSON)</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>correo</td>
+<td>string</td>
+<td>Sí</td>
+<td>Correo electrónico del usuario</td>
+</tr>
+<tr class="even">
+<td>contrasena</td>
+<td>string</td>
+<td>Sí</td>
+<td>Contraseña del usuario</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ejemplo de petición</strong></p>
+<blockquote>
+<p>curl -X POST
+https://backendcentral-desarrollo.up.railway.app/api/auth/login \</p>
+<p>-H "Content-Type: application/json" \</p>
+<p>-d '{"correo":"admin@paqtrack.com","contrasena":"admin123"}'</p>
+</blockquote>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>{</p>
+<p>"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",</p>
+<p>"usuario": {</p>
+<p>"codigo_usuario": 1,</p>
+<p>"correo": "admin@paqtrack.com",</p>
+<p>"rol": "superadmin"</p>
+<p>}</p>
+<p>}</p>
+</blockquote>
+<p><strong>2.3 Ver perfil del usuario autenticado</strong></p>
+<p><strong>GET</strong> /api/auth/perfil</p>
+<blockquote>
+<p><em>Devuelve los datos del usuario autenticado.</em></p>
+<p><strong>Roles mínimos:</strong> usuario, admin, superadmin</p>
+</blockquote>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>{</p>
+<p>"codigo_usuario": 1,</p>
+<p>"correo": "admin@paqtrack.com",</p>
+<p>"rol": "superadmin",</p>
+<p>"codigo_empresa": null</p>
+<p>}</p>
+</blockquote>
+<p><strong>3. Empresas</strong></p>
+<p>Gestión del catálogo de empresas registradas en el sistema. Solo
+accesible por administradores y superadministradores.</p>
+<p><strong>3.1 Listar empresas</strong></p>
+<p><strong>GET</strong> /api/empresas</p>
+<blockquote>
+<p><em>Devuelve la lista de empresas. El superadmin ve todas; el admin
+solo la suya.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>[</p>
+<p>{ "codigo": 1, "nombre": "GLS", "contacto": "admin@gls.com" },</p>
+<p>{ "codigo": 2, "nombre": "SEUR", "contacto": "admin@seur.com" }</p>
+<p>]</p>
+</blockquote>
+<p><strong>3.2 Detalle de una empresa</strong></p>
+<p><strong>GET</strong> /api/empresas/:id</p>
+<blockquote>
+<p><em>Devuelve los datos de una empresa concreta.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código de la empresa (codigo)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3.3 Crear empresa</strong></p>
+<p><strong>POST</strong> /api/empresas</p>
+<blockquote>
+<p><em>Crea una nueva empresa.</em></p>
+<p><strong>Roles mínimos:</strong> superadmin</p>
+</blockquote>
+<p><strong>Body (JSON)</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>nombre</td>
+<td>string</td>
+<td>Sí</td>
+<td>Nombre de la empresa</td>
+</tr>
+<tr class="even">
+<td>contacto</td>
+<td>string</td>
+<td>No</td>
+<td>Correo electrónico de contacto</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Respuesta exitosa (201)</strong></p>
+<blockquote>
+<p>{ "codigo": 4, "nombre": "DHL", "contacto": "admin@dhl.com" }</p>
+</blockquote>
+<p><strong>3.4 Editar empresa</strong></p>
+<p><strong>PUT</strong> /api/empresas/:id</p>
+<blockquote>
+<p><em>Actualiza los datos de una empresa.</em></p>
+<p><strong>Roles mínimos:</strong> superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código de la empresa</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Body (JSON)</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>nombre</td>
+<td>string</td>
+<td>No</td>
+<td>Nuevo nombre de la empresa</td>
+</tr>
+<tr class="even">
+<td>contacto</td>
+<td>string</td>
+<td>No</td>
+<td>Nuevo correo de contacto</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3.5 Eliminar empresa</strong></p>
+<p><strong>DELETE</strong> /api/empresas/:id</p>
+<blockquote>
+<p><em>Elimina una empresa y todos sus datos asociados.</em></p>
+<p><strong>Roles mínimos:</strong> superadmin</p>
+<p><em>⚠️ Esta operación elimina en cascada todos los usuarios y salidas
+de la empresa. Es irreversible.</em></p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código de la empresa a eliminar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>{ "mensaje": "Empresa eliminada correctamente" }</p>
+</blockquote>
+<p><strong>4. Usuarios</strong></p>
+<p>Gestión de usuarios del sistema. Los administradores gestionan los
+usuarios de su empresa; el superadministrador los gestiona todos.</p>
+<p><strong>4.1 Listar usuarios</strong></p>
+<p><strong>GET</strong> /api/usuarios</p>
+<blockquote>
+<p><em>Lista los usuarios disponibles según el rol del
+solicitante.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>[</p>
+<p>{ "codigo_usuario": 2, "correo": "admin@gls.com", "rol": "admin",
+"codigo_empresa": 1 },</p>
+<p>{ "codigo_usuario": 3, "correo": "usuario1@gls.com", "rol":
+"usuario", "codigo_empresa": 1 }</p>
+<p>]</p>
+</blockquote>
+<p><strong>4.2 Detalle de un usuario</strong></p>
+<p><strong>GET</strong> /api/usuarios/:id</p>
+<blockquote>
+<p><em>Devuelve los datos de un usuario.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código del usuario (codigo_usuario)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>4.3 Crear usuario</strong></p>
+<p><strong>POST</strong> /api/usuarios</p>
+<blockquote>
+<p><em>Crea un nuevo usuario.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Body (JSON)</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>correo</td>
+<td>string</td>
+<td>Sí</td>
+<td>Correo electrónico único del usuario</td>
+</tr>
+<tr class="even">
+<td>contrasena</td>
+<td>string</td>
+<td>Sí</td>
+<td>Contraseña (se almacena hasheada con bcrypt)</td>
+</tr>
+<tr class="odd">
+<td>rol</td>
+<td>string</td>
+<td>Sí</td>
+<td>Rol del usuario: admin o usuario</td>
+</tr>
+<tr class="even">
+<td>codigo_empresa</td>
+<td>integer</td>
+<td>No</td>
+<td>Empresa del usuario (solo superadmin puede asignar a cualquier
+empresa)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Respuesta exitosa (201)</strong></p>
+<blockquote>
+<p>{ "codigo_usuario": 10, "correo": "nuevo@gls.com", "rol": "usuario",
+"codigo_empresa": 1 }</p>
+</blockquote>
+<p><strong>4.4 Editar usuario</strong></p>
+<p><strong>PUT</strong> /api/usuarios/:id</p>
+<blockquote>
+<p><em>Actualiza los datos de un usuario.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código del usuario</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Body (JSON)</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>correo</td>
+<td>string</td>
+<td>No</td>
+<td>Nuevo correo electrónico</td>
+</tr>
+<tr class="even">
+<td>contrasena</td>
+<td>string</td>
+<td>No</td>
+<td>Nueva contraseña</td>
+</tr>
+<tr class="odd">
+<td>rol</td>
+<td>string</td>
+<td>No</td>
+<td>Nuevo rol: admin o usuario</td>
+</tr>
+</tbody>
+</table>
+<p><strong>4.5 Eliminar usuario</strong></p>
+<p><strong>DELETE</strong> /api/usuarios/:id</p>
+<blockquote>
+<p><em>Elimina un usuario del sistema.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código del usuario a eliminar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>{ "mensaje": "Usuario eliminado correctamente" }</p>
+</blockquote>
+<p><strong>5. Salidas</strong></p>
+<p>Registro y consulta de los pases de paquetes por las salidas físicas
+de las máquinas clasificadoras. Todos los usuarios autenticados pueden
+consultar; solo los administradores pueden crear; solo el
+superadministrador puede eliminar.</p>
+<p><strong>5.1 Listar salidas</strong></p>
+<p><strong>GET</strong> /api/salidas</p>
+<blockquote>
+<p><em>Devuelve el listado de salidas con soporte de filtros y
+paginación.</em></p>
+<p><strong>Roles mínimos:</strong> usuario, admin, superadmin</p>
+</blockquote>
+<p><strong>Parámetros de query</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>nro_salida</td>
+<td>integer</td>
+<td>No</td>
+<td>Filtra por número de cinta (1-40)</td>
+</tr>
+<tr class="even">
+<td>desde</td>
+<td>string</td>
+<td>No</td>
+<td>Fecha de inicio en formato YYYY-MM-DD</td>
+</tr>
+<tr class="odd">
+<td>hasta</td>
+<td>string</td>
+<td>No</td>
+<td>Fecha de fin en formato YYYY-MM-DD</td>
+</tr>
+<tr class="even">
+<td>pagina</td>
+<td>integer</td>
+<td>No</td>
+<td>Número de página (por defecto: 1)</td>
+</tr>
+<tr class="odd">
+<td>limite</td>
+<td>integer</td>
+<td>No</td>
+<td>Resultados por página (por defecto: 20)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ejemplo de petición</strong></p>
+<blockquote>
+<p>GET
+/api/salidas?nro_salida=5&amp;desde=2026-01-01&amp;pagina=1&amp;limite=20</p>
+</blockquote>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>{</p>
+<p>"total": 45,</p>
+<p>"pagina": 1,</p>
+<p>"limite": 20,</p>
+<p>"datos": [</p>
+<p>{</p>
+<p>"codigo": 101,</p>
+<p>"codigo_empresa": 1,</p>
+<p>"nro_salida": 5,</p>
+<p>"codigo_barras": "ABC123456789",</p>
+<p>"fecha_salida": "2026-01-15T10:32:00.000Z"</p>
+<p>}</p>
+<p>]</p>
+<p>}</p>
+</blockquote>
+<p><strong>5.2 Estadísticas de salidas</strong></p>
+<p><strong>GET</strong> /api/salidas/estadisticas</p>
+<blockquote>
+<p><em>Devuelve un resumen estadístico de las salidas agrupado por
+cinta.</em></p>
+<p><strong>Roles mínimos:</strong> usuario, admin, superadmin</p>
+</blockquote>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>[</p>
+<p>{ "nro_salida": 1, "total_paquetes": 320 },</p>
+<p>{ "nro_salida": 2, "total_paquetes": 285 }</p>
+<p>]</p>
+</blockquote>
+<p><strong>5.3 Buscar por código de barras</strong></p>
+<p><strong>GET</strong> /api/salidas/buscar/:codigoBarras</p>
+<blockquote>
+<p><em>Devuelve el historial completo de un paquete a partir de su
+código de barras.</em></p>
+<p><strong>Roles mínimos:</strong> usuario, admin, superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>codigoBarras</td>
+<td>string</td>
+<td>Sí</td>
+<td>Código de barras del paquete a consultar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ejemplo de petición</strong></p>
+<blockquote>
+<p>GET /api/salidas/buscar/ABC123456789</p>
+</blockquote>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>[</p>
+<p>{</p>
+<p>"codigo": 101,</p>
+<p>"nro_salida": 5,</p>
+<p>"fecha_salida": "2026-01-15T10:32:00.000Z",</p>
+<p>"empresa": "GLS"</p>
+<p>}</p>
+<p>]</p>
+</blockquote>
+<p><strong>5.4 Detalle de una salida</strong></p>
+<p><strong>GET</strong> /api/salidas/:id</p>
+<blockquote>
+<p><em>Devuelve los datos completos de un registro de salida.</em></p>
+<p><strong>Roles mínimos:</strong> usuario, admin, superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código del registro de salida</td>
+</tr>
+</tbody>
+</table>
+<p><strong>5.5 Registrar una salida</strong></p>
+<p><strong>POST</strong> /api/salidas</p>
+<blockquote>
+<p><em>Registra el paso de un paquete por una salida de la máquina
+clasificadora.</em></p>
+<p><strong>Roles mínimos:</strong> admin, superadmin</p>
+</blockquote>
+<p><strong>Body (JSON)</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>nro_salida</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Número de la salida física (1-40)</td>
+</tr>
+<tr class="even">
+<td>codigo_barras</td>
+<td>string</td>
+<td>Sí</td>
+<td>Código de barras del paquete</td>
+</tr>
+<tr class="odd">
+<td>fecha_salida</td>
+<td>string</td>
+<td>No</td>
+<td>Fecha y hora en formato ISO 8601 (por defecto: now)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ejemplo de petición</strong></p>
+<blockquote>
+<p>curl -X POST
+https://backendcentral-desarrollo.up.railway.app/api/salidas \</p>
+<p>-H "Authorization: Bearer &lt;token&gt;" \</p>
+<p>-H "Content-Type: application/json" \</p>
+<p>-d '{"nro_salida":3,"codigo_barras":"XYZ987654321"}'</p>
+</blockquote>
+<p><strong>Respuesta exitosa (201)</strong></p>
+<blockquote>
+<p>{</p>
+<p>"codigo": 302,</p>
+<p>"codigo_empresa": 1,</p>
+<p>"nro_salida": 3,</p>
+<p>"codigo_barras": "XYZ987654321",</p>
+<p>"fecha_salida": "2026-03-18T10:00:00.000Z"</p>
+<p>}</p>
+</blockquote>
+<p><strong>5.6 Eliminar una salida</strong></p>
+<p><strong>DELETE</strong> /api/salidas/:id</p>
+<blockquote>
+<p><em>Elimina un registro de salida.</em></p>
+<p><strong>Roles mínimos:</strong> superadmin</p>
+</blockquote>
+<p><strong>Parámetros de ruta</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Parámetro</strong></th>
+<th><strong>Tipo</strong></th>
+<th><strong>Requerido</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Código del registro a eliminar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Respuesta exitosa (200)</strong></p>
+<blockquote>
+<p>{ "mensaje": "Salida eliminada correctamente" }</p>
+</blockquote>
+<p><strong>6. Códigos de Respuesta HTTP</strong></p>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 38%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Código</strong></th>
+<th><strong>Estado</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>200</strong></td>
+<td><strong>OK</strong></td>
+<td>Petición procesada con éxito</td>
+</tr>
+<tr class="even">
+<td><strong>201</strong></td>
+<td><strong>Created</strong></td>
+<td>Recurso creado correctamente</td>
+</tr>
+<tr class="odd">
+<td><strong>400</strong></td>
+<td><strong>Bad Request</strong></td>
+<td>Parámetros inválidos o faltantes</td>
+</tr>
+<tr class="even">
+<td><strong>401</strong></td>
+<td><strong>Unauthorized</strong></td>
+<td>Token ausente, inválido o expirado</td>
+</tr>
+<tr class="odd">
+<td><strong>403</strong></td>
+<td><strong>Forbidden</strong></td>
+<td>El usuario no tiene permisos para esta acción</td>
+</tr>
+<tr class="even">
+<td><strong>404</strong></td>
+<td><strong>Not Found</strong></td>
+<td>El recurso solicitado no existe</td>
+</tr>
+<tr class="odd">
+<td><strong>500</strong></td>
+<td><strong>Internal Server Error</strong></td>
+<td>Error interno del servidor</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Formato de error</strong></p>
+<p>Cuando la API devuelve un código de error, el cuerpo incluye siempre
+un campo mensaje:</p>
+<blockquote>
+<p>{ "mensaje": "Descripción del error" }</p>
+</blockquote>
+<p><strong>7. Variables de Entorno</strong></p>
+<p>El servidor se configura mediante el archivo .env. A continuación se
+describen todas las variables disponibles:</p>
+<table>
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 24%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Variable</strong></th>
+<th><strong>Valor por defecto</strong></th>
+<th><strong>Descripción</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MYSQL_ROOT_PASSWORD</td>
+<td>root</td>
+<td>Contraseña root de MySQL</td>
+</tr>
+<tr class="even">
+<td>MYSQL_DATABASE</td>
+<td>paqtrack_db</td>
+<td>Nombre de la base de datos</td>
+</tr>
+<tr class="odd">
+<td>JWT_SECRET</td>
+<td>clave_secreta_...</td>
+<td>Clave para firmar los tokens JWT</td>
+</tr>
+<tr class="even">
+<td>DB_HOST</td>
+<td>db</td>
+<td>Host de la base de datos (nombre del servicio Docker)</td>
+</tr>
+<tr class="odd">
+<td>DB_USER</td>
+<td>root</td>
+<td>Usuario de MySQL</td>
+</tr>
+<tr class="even">
+<td>DB_PASSWORD</td>
+<td>root</td>
+<td>Contraseña del usuario de MySQL</td>
+</tr>
+<tr class="odd">
+<td>DB_NAME</td>
+<td>paqtrack_db</td>
+<td>Base de datos a usar</td>
+</tr>
+<tr class="even">
+<td>PORT</td>
+<td>3000</td>
+<td>Puerto en el que escucha el servidor</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><em>⚠️ Cambia JWT_SECRET, DB_PASSWORD y MYSQL_ROOT_PASSWORD por
+valores seguros antes de desplegar en producción.</em></p>
+</blockquote>
+</body>
+</html>
