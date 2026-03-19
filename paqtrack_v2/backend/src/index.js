@@ -1,20 +1,16 @@
 "use strict";
 import express from "express";
 import cors from "cors";
-
 import { pool } from "./config/db.js";
 import { initDB } from "./config/db.init.js";
 import { superadminSeeder } from "./seeders/superadmin.seeder.js";
-
 import { authRouter } from "./routes/auth.routes.js";
 import { empresaRouter } from "./routes/empresa.routes.js";
 import { usuariosRouter } from "./routes/usuarios.routes.js";
 import { salidasRouter } from "./routes/salidas.routes.js";
 import { syncRouter } from "./routes/sync.routes.js";
 import { datosSeeder } from "./seeders/datos.seeder.js";
-
 const server = express();
-
 // Cabeceras CORS manuales — van ANTES de todo
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -23,7 +19,6 @@ server.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.status(204).end();
   next();
 });
-
 server.use(cors({
   origin: (origin, callback) => callback(null, true),
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -33,15 +28,12 @@ server.use(cors({
 }));
 server.options("*", cors());
 server.use(express.json());
-
 server.get("/", (_req, res) => res.json({ mensaje: "PaqTrack API v2 funcionando" }));
-
 server.use("/api/auth", authRouter);
 server.use("/api/empresas", empresaRouter);
 server.use("/api/usuarios", usuariosRouter);
 server.use("/api/salidas", salidasRouter);
 server.use("/api/sync", syncRouter);
-
 async function esperarMySQL(intentos = 15) {
   for (let i = 1; i <= intentos; i++) {
     try {
@@ -59,13 +51,11 @@ async function esperarMySQL(intentos = 15) {
   console.error("❌ No se pudo conectar a MySQL");
   process.exit(1);
 }
-
 async function arrancar() {
   await esperarMySQL();
   await initDB();
   await superadminSeeder();
   await datosSeeder();
-
   server.listen(3000, () => {
     console.log("🚀 Servidor en http://localhost:3000");
     console.log("📋 Rutas disponibles:");
@@ -79,21 +69,12 @@ async function arrancar() {
     console.log("   POST   /api/sync  (sync desde clientes)");
   });
 }
-
-
-
-
-
-
 /*Debug seaders de hoy fallos*/
-
-
 // TEMPORAL — borrar después
 const l = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", n = "0123456789";
 const cb = () =>
   Array.from({ length: 3 }, () => l[Math.floor(Math.random() * 26)]).join('') +
   Array.from({ length: 9 }, () => n[Math.floor(Math.random() * 10)]).join('');
-
 server.get("/seed-hoy", async (_req, res) => {
   const [empresas] = await pool.query("SELECT codigo FROM empresa");
   for (const e of empresas)
@@ -104,7 +85,6 @@ server.get("/seed-hoy", async (_req, res) => {
       );
   res.json({ ok: true, empresas: empresas.length, salidas: empresas.length * 5 });
 });
-
 server.get("/fix-fechas", async (_req, res) => {
   const [result] = await pool.query(
     `UPDATE salidas 
@@ -123,5 +103,8 @@ server.get("/debug-hoy", async (req, res) => {
   );
   res.json({ porFecha });
 });
+export default server;
 
-arrancar();
+if (process.env.NODE_ENV !== "test") {
+  arrancar();
+}

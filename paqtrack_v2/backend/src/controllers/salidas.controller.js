@@ -1,7 +1,7 @@
 "use strict";
 import { pool } from "../config/db.js";
 
-export const getAll = async (req, res) => {
+export const  getAll = async (req, res) => {
   try {
     const { nro_salida, codigo_barras, desde, hasta, codigo_empresa } = req.query;
     const pagina = parseInt(req.query.pagina) || 1;
