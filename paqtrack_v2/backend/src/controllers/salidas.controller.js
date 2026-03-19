@@ -61,7 +61,7 @@ export const  getAll = async (req, res) => {
 
     return res.status(200).json({
       total,
-      pagina,
+      pagina,   
       limite,
       paginas: Math.ceil(total / limite),
       salidas: rows
