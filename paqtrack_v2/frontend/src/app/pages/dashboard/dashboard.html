@@ -71,7 +71,7 @@
             <button (click)="filtroEmpresa.set(e.codigo); buscarConFiltros(false)"
               class="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors">
               <span class="w-2 h-2 rounded-full shrink-0" [style.background]="e.color"></span>
-              <span class="truncate max-w-[80px]">{{ e.nombre }}</span>
+              <span class="truncate max-w-20">{{ e.nombre }}</span>
             </button>
             }
           </div>
