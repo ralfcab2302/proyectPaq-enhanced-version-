@@ -39,7 +39,6 @@ export class Nabvar implements OnInit {
   setLang(lang: Language): void {
     this.i18n.setLanguage(lang);
     //Refrescar la página para que se apliquen los cambios de idioma
-    window.location.reload();
   }
 
   cerrarSesion() {
