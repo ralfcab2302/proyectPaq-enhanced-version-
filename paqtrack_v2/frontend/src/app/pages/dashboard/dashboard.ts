@@ -6,10 +6,11 @@ import { Nabvar } from '../nabvar/nabvar';
 import { Salidas } from '../../services/salidas';
 import { Salida, EstadisticasResponse, Empresa } from '../../models/models';
 import { EmpresaService } from '../../services/empresa';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Nabvar, DatePipe],
+  imports: [Nabvar, DatePipe,TranslatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

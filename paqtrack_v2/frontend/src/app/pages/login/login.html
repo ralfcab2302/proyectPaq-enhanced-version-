@@ -17,20 +17,20 @@
 
     <!-- Título -->
     <p class="text-xl font-semibold text-center text-white mb-6">
-      <span class="text-blue-400">Rovimatica</span> PaqTracer
+      <span class="text-blue-400">Rovimatica</span> {{ 'login.title' | translate }}
     </p>
 
     <!-- Email -->
     <div class="mt-2">
-      <label class="block text-slate-400 mb-1">Email</label>
-      <input type="email" #correoInput placeholder="correo@empresa.com" required (input)="correo = correoInput.value"
+      <label class="block text-slate-400 mb-1">{{ 'login.email' | translate }}</label>
+      <input type="email" #correoInput [placeholder]="'login.emailPlaceholder' | translate" required (input)="correo = correoInput.value"
         class="border border-slate-600 bg-slate-700 text-white rounded-lg w-full p-2 outline-blue-400 placeholder-slate-500 focus:border-blue-400 transition-colors" />
     </div>
 
     <!-- Contraseña -->
     <div class="mt-4">
-      <label class="block text-slate-400 mb-1">Contraseña</label>
-      <input type="password" #passInput placeholder="••••••••" required (input)="contrasena = passInput.value"
+      <label class="block text-slate-400 mb-1">{{ 'login.password' | translate }}</label>
+      <input type="password" #passInput [placeholder]="'login.passwordPlaceholder' | translate" required (input)="contrasena = passInput.value"
         (keydown.enter)="comprobarUser()"
         class="border border-slate-600 bg-slate-700 text-white rounded-lg w-full p-2 outline-blue-400 placeholder-slate-500 focus:border-blue-400 transition-colors" />
     </div>
@@ -38,7 +38,7 @@
     <!-- Botón -->
     <button type="button" (click)="comprobarUser()" [disabled]="cargando()"
       class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-white w-full py-2.5 rounded-lg mt-6 cursor-pointer font-medium tracking-wide">
-      {{ cargando() ? 'Cargando...' : 'Iniciar sesión' }}
+      {{ cargando() ? ('login.loading' | translate) : ('login.loginButton' | translate) }}
     </button>
 
     <!-- Error -->

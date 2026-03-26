@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { Nabvar } from '../nabvar/nabvar';
 import { Salidas } from '../../services/salidas';
 import { Salida } from '../../models/models';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-busqueda',
-  imports: [Nabvar],
+  imports: [Nabvar,TranslatePipe],
   templateUrl: './busqueda.html',
   styleUrl: './busqueda.css',
 })

@@ -2,13 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrl: './login.css',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,TranslatePipe],
 })
 export class Login {
   private auth = inject(AuthService);
