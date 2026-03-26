@@ -38,6 +38,7 @@ export class Nabvar implements OnInit {
 
   setLang(lang: Language): void {
     this.i18n.setLanguage(lang);
+    this.router.navigate([this.router.url]);
   }
 
   cerrarSesion() {
