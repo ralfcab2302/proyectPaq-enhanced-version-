@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
